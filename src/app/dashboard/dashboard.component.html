@@ -1,1 +1,8 @@
 <p>dashboard works!</p>
+<h2>Product List</h2>
+<ul>
+    <p *ngIf="products.length==0">No Products or no backend connection</p>
+    <li *ngFor="let product of products">
+        <strong>{{ product.title }}</strong> - ${{ product.price }}
+    </li>
+</ul>

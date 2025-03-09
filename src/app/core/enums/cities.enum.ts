@@ -1,0 +1,17 @@
+export enum GujaratCity {
+    Ahmedabad = "Ahmedabad",
+    Surat = "Surat",
+    Vadodara = "Vadodara",
+    Rajkot = "Rajkot",
+    Bhavnagar = "Bhavnagar",
+    Jamnagar = "Jamnagar",
+    Gandhinagar = "Gandhinagar",
+    Junagadh = "Junagadh",
+    Anand = "Anand",
+    Bharuch = "Bharuch",
+    Valsad = "Valsad",
+    Navsari = "Navsari",
+    Mehsana = "Mehsana",
+    Morbi = "Morbi",
+    Nadiad = "Nadiad",
+}

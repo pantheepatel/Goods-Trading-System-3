@@ -3,11 +3,14 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { RegisterComponent } from './auth/register/register.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'auth/login', component: LoginComponent },
+  { path: 'auth/register', component: RegisterComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  // { path: 'auth/**', redirectTo: 'auth/login' }, // Redirect unknown route of auth to login
   { path: '**', redirectTo: 'dashboard' } // Redirect unknown routes, or can show 404 page
 ];
 

@@ -21,6 +21,7 @@ export class RegisterComponent {
   city: string = '';
   email: string = '';
   password: string = '';
+  errorMessage: string = '';
 
   // Convert GujaratCity enum to an array
   cities = Object.values(GujaratCity);
@@ -36,11 +37,12 @@ export class RegisterComponent {
 
     this.authService.register(userData).subscribe({
       next: (response) => {
-        console.log('Registration successful:', response);
+        // console.log('Registration successful:', response);
         this.router.navigate(['/auth/login']);
       },
       error: (err) => {
         console.error('Registration failed:', err);
+        this.errorMessage = err.error || 'Registration failed. Please try again.';
       }
     });
   }

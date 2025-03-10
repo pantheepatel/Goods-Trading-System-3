@@ -1,3 +1,4 @@
+import { GujaratCity } from '../enums/cities.enum';
 import { Product } from './product.model';
 
 export class User {
@@ -35,9 +36,10 @@ export class UpdateUserDTO {
         public email?: string
     ) { }
 }
-export class VerifyUserDTO {
+// this to be used while we send otp after registration also when user choose resend otp into POST req
+export class SendOTPDTO {
     constructor(
-        public userId: string,
+        public email: string,
         public otp: string
     ) { }
 }
@@ -47,6 +49,7 @@ export class UserProfileDTO {
         public fullName: string,
         public city: string,
         public isVerified: boolean,
-        public sellingProducts: Product[] = [] // Only necessary fields
+        public sellingProducts: Product[] = [], // Only necessary fields
+        public favouriteProducts: Product[] = [] // Many-to-Many
     ) { }
 }

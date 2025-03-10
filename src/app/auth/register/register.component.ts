@@ -3,11 +3,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common'; // Required for *ngFor
 import { FormsModule } from '@angular/forms'; // Required for [(ngModel)]
 import { GujaratCity } from '../../core/enums/cities.enum';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-register',
   standalone: true, // Needed if using Angular Standalone Components
-  imports: [CommonModule, FormsModule], // Import necessary modules
+  imports: [CommonModule, FormsModule, RouterLink], // Import necessary modules
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })

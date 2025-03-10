@@ -8,13 +8,14 @@ import { AuthService } from '../auth.service';
   selector: 'app-login',
   standalone: true, // Needed if using Angular Standalone Components
   imports: [CommonModule, FormsModule, RouterLink], // Import necessary modules
-  providers:[AuthService],
+  providers: [AuthService],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css'] // Fixed incorrect 'styleUrl' to 'styleUrls'
 })
 export class LoginComponent {
   private authService = inject(AuthService);
-  private router = inject(Router)
+  private router = inject(Router);
+
   email: string = '';
   password: string = '';
   showPassword: boolean = false;
@@ -25,18 +26,23 @@ export class LoginComponent {
   }
 
   login() {
+    // Validation: Check if both email and password are provided
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Email and password are required.';
+      return;
+    }
+
     const credentials = { email: this.email, password: this.password };
 
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        // console.log('Login successful:', response);
         // Store token & navigate
         localStorage.setItem('token', response.token);
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
-        console.error('Registration failed:', err);
-        this.errorMessage = err.error || 'Registration failed. Please try again.';
+        console.error('Login failed:', err);
+        this.errorMessage = err.error || 'Login failed. Please try again.';
       }
     });
   }

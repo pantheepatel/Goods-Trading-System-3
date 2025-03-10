@@ -10,7 +10,7 @@ export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/register', component: RegisterComponent },
-  { path: 'auth/verify', component: VerifyEmailComponent },
+  { path: 'auth/verifyEmail', component: VerifyEmailComponent },
   { path: 'dashboard', component: DashboardComponent },
   // { path: 'auth/**', redirectTo: 'auth/login' }, // Redirect unknown route of auth to login
   { path: '**', redirectTo: 'dashboard' } // Redirect unknown routes, or can show 404 page

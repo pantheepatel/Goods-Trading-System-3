@@ -2,6 +2,7 @@
   <div class="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
     <h2 class="text-2xl font-semibold text-center text-gray-700 mb-6">Register</h2>
 
+    <!-- Error Message -->
     <div *ngIf="errorMessage" class="text-red-600 text-sm text-center p-2 bg-red-100 rounded-lg">
       {{ errorMessage }}
     </div>
@@ -28,14 +29,54 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Email</label>
         <input type="email" [(ngModel)]="email" name="email" required
+          pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+          #emailInput="ngModel"
           class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none" />
+        <p *ngIf="emailInput.invalid && emailInput.touched" class="text-red-600 text-sm mt-1">
+          Please enter a valid email address.
+        </p>
       </div>
 
       <!-- Password -->
       <div>
-        <label class="block text-sm font-medium text-gray-700">Password</label>
-        <input type="password" [(ngModel)]="password" name="password" required
-          class="mt-1 p-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none" />
+        <label for="password" class="block text-gray-600 font-medium">Password</label>
+        <div class="relative">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            [(ngModel)]="password"
+            name="password"
+            class="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="Enter your password"
+            required
+          />
+          <!-- Toggle Password Button -->
+          <button type="button" (click)="togglePassword()"
+            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700">
+            <i class="fa-solid" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div>
+        <label for="confirmPassword" class="block text-gray-600 font-medium">Confirm Password</label>
+        <div class="relative">
+          <input
+            [type]="showConfirmPassword ? 'text' : 'password'"
+            id="confirmPassword"
+            [(ngModel)]="confirmPassword"
+            name="confirmPassword"
+            class="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            placeholder="Confirm your password"
+            required
+          />
+          <!-- Toggle Confirm Password Button -->
+          <button type="button" (click)="toggleConfirmPassword()"
+            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700">
+            <i class="fa-solid" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
       </div>
 
       <!-- Submit Button -->

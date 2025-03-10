@@ -28,7 +28,15 @@ export class AppComponent implements OnInit {
     // Hide navbar & footer on login and register pages
     this.router.events.subscribe(() => {
       this.showNavbarAndFooter = ['auth/login', 'auth/register'].includes(this.router.url);
-      console.log(this.showNavbarAndFooter);
+      // console.log(this.showNavbarAndFooter);
     });
   }
 }
+
+
+// TODO: 
+// 1. password and confirm password
+// 2. validation of angular form for all fields in login and register
+// 3. otp page
+// 4. after registration redirect to otp page
+// 5. eye icon in login

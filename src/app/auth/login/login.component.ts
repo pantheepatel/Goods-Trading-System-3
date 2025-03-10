@@ -18,7 +18,7 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   showPassword: boolean = false;
-
+  errorMessage: string = '';
 
   togglePassword() {
     this.showPassword = !this.showPassword;
@@ -29,13 +29,14 @@ export class LoginComponent {
 
     this.authService.login(credentials).subscribe({
       next: (response) => {
-        console.log('Login successful:', response);
+        // console.log('Login successful:', response);
         // Store token & navigate
         localStorage.setItem('token', response.token);
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
-        console.error('Login failed:', err);
+        console.error('Registration failed:', err);
+        this.errorMessage = err.error || 'Registration failed. Please try again.';
       }
     });
   }

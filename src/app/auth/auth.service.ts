@@ -19,7 +19,7 @@ export class AuthService {
     localStorage.removeItem('token');
   }
 
-  private baseUrl = `${environment.baseUrl}/api/auth/`; // Replace with your API URL
+  private baseUrl = `${environment.baseUrl}api/auth/`; // Replace with your API URL
 
   constructor(private http: HttpClient) {}
 

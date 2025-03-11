@@ -35,8 +35,7 @@ export class AppComponent implements OnInit {
 
 
 // TODO: 
-// 1. password and confirm password
-// 2. validation of angular form for all fields in login and register
 // 3. otp page
 // 4. after registration redirect to otp page
-// 5. eye icon in login
+// 5. Save login credentials in localhost
+//Flow register - verification - login

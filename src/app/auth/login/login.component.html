@@ -1,95 +1,66 @@
 <div class="flex justify-center items-center min-h-screen bg-gray-100">
-    <div class="bg-white p-8 rounded-2xl shadow-lg w-96">
-      <h2 class="text-2xl font-semibold text-center text-gray-700 mb-6">Login</h2>
-  
-      <div *ngIf="errorMessage" class="text-red-600 text-sm text-center p-2 bg-red-100 rounded-lg">
-        {{ errorMessage }}
-      </div>
-      
-      <!-- Email Input -->
-      <div class="mb-4">
-        <label for="email" class="block text-gray-600 font-medium">Email</label>
+  <div class="bg-white p-8 rounded-2xl shadow-lg w-96">
+    <h2 class="text-2xl font-semibold text-center text-gray-700 mb-6">Login</h2>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="text-red-600 text-sm text-center p-2 bg-red-100 rounded-lg">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Email Input -->
+    <div class="mb-4">
+      <label for="email" class="block text-gray-600 font-medium">Email</label>
+      <input
+        type="email"
+        id="email"
+        [(ngModel)]="email"
+        name="email"
+        #emailInput="ngModel"
+        class="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+        placeholder="Enter your email"
+        pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        required
+      />
+      <p *ngIf="emailInput.invalid && emailInput.touched" class="text-red-600 text-sm mt-1">
+        Please enter a valid email address.
+      </p>
+    </div>
+    
+
+    <!-- Password Input with Show/Hide Toggle -->
+    <div class="mb-4">
+      <label for="password" class="block text-gray-600 font-medium">Password</label>
+      <div class="relative">
         <input
-          type="email"
-          id="email"
-          [(ngModel)]="email"
+          [type]="showPassword ? 'text' : 'password'"
+          id="password"
+          [(ngModel)]="password"
           class="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          placeholder="Enter your email"
+          placeholder="Enter your password"
           required
         />
-      </div>
-  
-      <!-- Password Input with Show/Hide Toggle -->
-      <div class="mb-4">
-        <label for="password" class="block text-gray-600 font-medium">Password</label>
-        <div class="relative">
-          <input
-            [type]="showPassword ? 'text' : 'password'"
-            id="password"
-            [(ngModel)]="password"
-            class="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Enter your password"
-            required
-          />
-          <button
-            type="button"
-            (click)="togglePassword()"
-            class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
-          >
-            <svg
-              *ngIf="!showPassword"
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-6-10-6s2.323-3.106 5.651-4.885M9.878 9.879A3 3 0 1014.12 14.12M16.732 16.732A9.969 9.969 0 0121 12s-2.323-3.106-5.651-4.885M9.878 14.121A3 3 0 1114.12 9.88"
-              />
-            </svg>
-            <svg
-              *ngIf="showPassword"
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M15.232 15.232A3 3 0 119.88 9.88M4.928 19.072A9.969 9.969 0 013 12s2.323-3.106 5.651-4.885M19.072 4.928A9.969 9.969 0 0121 12s-2.323 3.106-5.651 4.885"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-  
-      <!-- Login Button -->
-      <button
-        class="w-full bg-blue-500 text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition"
-        (click)="login()"
-      >
-        Login
-      </button>
-  
-      <!-- Go to Register -->
-      <div class="text-center mt-4">
-        <p class="text-gray-600">
-          Don't have an account?
-          <a
-            [routerLink]="['/auth/register']"
-            class="text-blue-500 hover:underline"
-          >
-            Register
-          </a>
-        </p>
+        <!-- Toggle Password Button -->
+        <button type="button" (click)="togglePassword()"
+          class="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700">
+          <i class="fa-solid" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+        </button>
       </div>
     </div>
+
+    <!-- Login Button -->
+    <button
+      class="w-full bg-blue-500 text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition"
+      (click)="login()"
+    >
+      Login
+    </button>
+
+    <!-- Go to Register -->
+    <div class="text-center mt-4">
+      <p class="text-gray-600">
+        Don't have an account?
+        <a [routerLink]="['/auth/register']" class="text-blue-500 hover:underline">Register</a>
+      </p>
+    </div>
   </div>
-  
+</div>

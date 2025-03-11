@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { LoginUserDTO, RegisterUserDTO,SendOTPDTO } from '../core/models/user.model';
@@ -51,13 +51,26 @@ export class AuthService {
   }
 
   // Verify OTP API
-  verifyOTP(email: string, otp: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}verifyOTP`, { email, otp });
+  verifyOTP(email: string, enteredOtp: string,token:string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`, // Ensure `token` is valid
+    });
+    const payload = {
+      enteredOtp: enteredOtp,
+      email: email 
+    };  
+    console.log(payload);
+    return this.http.post<any>(`${this.baseUrl}verifyOTP`, payload, {headers,withCredentials: true});
   }
 
   // Resend OTP API (also starts new timer)
-  resendOTP(email: string): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}getOTP`, { email });
+  resendOTP(email: string,token:string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`, // Ensure you pass a valid JWT token
+    });
+    return this.http.post<any>(`${this.baseUrl}getOTP`, JSON.stringify(email), {headers});
   }
 }
 

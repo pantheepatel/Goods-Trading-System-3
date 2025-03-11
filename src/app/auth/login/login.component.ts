@@ -36,14 +36,15 @@ export class LoginComponent implements OnInit {
     }
 
     const credentials = { email: this.email, password: this.password };
-
     this.authService.login(credentials).subscribe({
       next: (response) => {
+        console.log(response);
         const expiration = new Date().getTime() + 2 * 24 * 60 * 60 * 1000; // 2 days in ms
-        localStorage.setItem('token', response.token);
+        localStorage.setItem('credentials', JSON.stringify(credentials));
+        localStorage.setItem('token', JSON.stringify(response.token));
         localStorage.setItem('token_expiration', expiration.toString());
 
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['auth/verify-email']);
       },
       error: (err) => {
         console.error('Login failed:', err);

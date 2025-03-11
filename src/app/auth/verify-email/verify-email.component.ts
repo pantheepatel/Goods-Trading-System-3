@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common'; 
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-verify-email',
@@ -13,22 +14,24 @@ import { AuthService } from '../auth.service';
 })
 export class VerifyEmailComponent {
   otp: string = '';
-  email: string = ''; // Get email from user input
+  email: string = JSON.parse(localStorage.getItem('credentials') || '{}')?.email || '';  // Get email from user input
+  token: string = JSON.parse(localStorage.getItem('token') || '{}');  // Get email from user input
   countdown: number = 5 * 60; // 5 minutes in seconds
   resendDisabled: boolean = true;
   interval: any;
   router: any;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
     this.startCountdown();
+    this.resendOTP();
   }
 
- // ✅ Fix: Define the handleInput method
- handleInput(event: any) {
-  this.otp = event.target.value.replace(/\D/g, ''); // Allow only numbers
-}
+  // ✅ Fix: Define the handleInput method
+  handleInput(event: any) {
+    this.otp = event.target.value.replace(/\D/g, ''); // Allow only numbers
+  }
   startCountdown() {
     this.resendDisabled = true;
     this.countdown = 5 * 60;
@@ -43,8 +46,18 @@ export class VerifyEmailComponent {
   }
 
   verifyOTP() {
+    console.log(this.otp);
     if (this.otp.length === 6) {
-      this.authService.verifyOTP(this.email, this.otp).subscribe({
+      // let verifyOTPObj = { "enteredOtp": this.otp, "email": this.email };
+      // Retrieve token from localStorage (if stored during login)
+      // const token = localStorage.getItem('authToken'); // Make sure the token exists
+
+      // const headers = new HttpHeaders({
+      //   'Content-Type': 'application/json',
+      //   Authorization: `Bearer ${token}`, // Send token if required
+      // });
+      console.log('token is : ' + this.token);
+      this.authService.verifyOTP(this.email, this.otp, this.token).subscribe({
         next: () => {
           clearInterval(this.interval);
           alert('OTP Verified Successfully!');
@@ -56,13 +69,15 @@ export class VerifyEmailComponent {
     }
   }
   resendOTP() {
-    this.authService.resendOTP(this.email).subscribe({
+    console.log(this.email);
+    this.authService.resendOTP(this.email.trim(),this.token).subscribe({
       next: () => {
         alert('New OTP Sent!');
-        this.router.navigate(['/verifyEmail']); 
+        this.router.navigate(['/verify-email']);
         this.startCountdown();
       },
-      error: () => {
+      error: (e) => {
+        console.log(e);
         alert('Error resending OTP.');
       }
     });

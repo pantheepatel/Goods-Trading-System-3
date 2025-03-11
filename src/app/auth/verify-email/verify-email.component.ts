@@ -1,63 +1,76 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common'; 
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-verify-email',
   standalone: true,
-  imports: [CommonModule, FormsModule], 
+  imports: [CommonModule, FormsModule],
   templateUrl: './verify-email.component.html',
   styleUrls: ['./verify-email.component.css']
 })
 export class VerifyEmailComponent {
-  otp: string[] = ['', '', '', '', '', ''];
-  resendDisabled = true;
-  countdown = 30;
+  otp: string = '';
+  email: string = ''; // Get email from user input
+  countdown: number = 5 * 60; // 5 minutes in seconds
+  resendDisabled: boolean = true;
+  interval: any;
+  router: any;
 
-  constructor() {
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
     this.startCountdown();
   }
 
+ // ✅ Fix: Define the handleInput method
+ handleInput(event: any) {
+  this.otp = event.target.value.replace(/\D/g, ''); // Allow only numbers
+}
   startCountdown() {
     this.resendDisabled = true;
-    this.countdown = 30;
-    const interval = setInterval(() => {
-      this.countdown--;
-      if (this.countdown === 0) {
-        clearInterval(interval);
-        this.resendDisabled = false;
+    this.countdown = 5 * 60;
+
+    this.interval = setInterval(() => {
+      if (this.countdown > 0) {
+        this.countdown--;
+      } else {
+        this.resendOTP();
       }
     }, 1000);
   }
 
-  handleInput(event: any, index: number) {
-    const input = event.target;
-    if (input.value.length === 1 && index < this.otp.length - 1) {
-      document.getElementById(`otp-${index + 1}`)?.focus();
-    } else if (input.value.length === 0 && index > 0) {
-      document.getElementById(`otp-${index - 1}`)?.focus();
-    }
-  }
-
   verifyOTP() {
-    const enteredOTP = this.otp.join('');
-    if (enteredOTP.length === 6 && !this.otp.includes('')) {
-      alert('OTP Verified Successfully!');
-    } else {
-      alert('Please enter all 6 digits.');
+    if (this.otp.length === 6) {
+      this.authService.verifyOTP(this.email, this.otp).subscribe({
+        next: () => {
+          clearInterval(this.interval);
+          alert('OTP Verified Successfully!');
+        },
+        error: () => {
+          alert('Invalid OTP. Try again.');
+        }
+      });
     }
   }
-
   resendOTP() {
-    if (!this.resendDisabled) {
-      this.otp = ['', '', '', '', '', ''];
-      this.startCountdown();
-      alert('OTP Resent!');
-    }
+    this.authService.resendOTP(this.email).subscribe({
+      next: () => {
+        alert('New OTP Sent!');
+        this.router.navigate(['/verifyEmail']); 
+        this.startCountdown();
+      },
+      error: () => {
+        alert('Error resending OTP.');
+      }
+    });
   }
 
-  // ✅ Fix: Use a getter function instead of inline logic in the template
-  get isOtpInvalid(): boolean {
-    return this.otp.includes('') || this.otp.join('').length !== 6;
+  get formattedCountdown(): string {
+    const minutes = Math.floor(this.countdown / 60);
+    const seconds = this.countdown % 60;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   }
 }

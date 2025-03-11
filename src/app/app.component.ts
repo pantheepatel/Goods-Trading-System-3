@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
 import { ProductService } from './services/product/product.service';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { FooterComponent } from './shared/footer/footer.component';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +14,13 @@ import { FooterComponent } from './shared/footer/footer.component';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'Goods-Trading-System';
   products: any[] = [];
   showNavbarAndFooter = true;
+  private routerSubscription!: Subscription;
 
-  constructor(private productService: ProductService, private router: Router) { }
+  constructor(private productService: ProductService, private router: Router) {}
 
   ngOnInit() {
     // Fetch products
@@ -25,17 +28,23 @@ export class AppComponent implements OnInit {
       this.products = data;
     });
 
-    // Hide navbar & footer on login and register pages
-    this.router.events.subscribe(() => {
-      this.showNavbarAndFooter = ['auth/login', 'auth/register'].includes(this.router.url);
-      // console.log(this.showNavbarAndFooter);
-    });
+    // Listen for route changes & hide navbar/footer if needed
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        this.showNavbarAndFooter = !event.url.includes('/auth/login') && !event.url.includes('/auth/register') && !event.url.includes('/auth/verifyEmail');
+      });
+  }
+
+  ngOnDestroy() {
+    // Prevent memory leaks by unsubscribing
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 }
 
 
 // TODO: 
-// 3. otp page
-// 4. after registration redirect to otp page
 // 5. Save login credentials in localhost
 //Flow register - verification - login

@@ -2,39 +2,65 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { LoginUserDTO, RegisterUserDTO } from '../core/models/user.model';
+import { LoginUserDTO, RegisterUserDTO,SendOTPDTO } from '../core/models/user.model';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-
-  // This method will store the token in the local storage
-  getToken() {
-    return localStorage.getItem('token');
-  }
-  // This method will remove the token from the local storage
-  logout() {
-    localStorage.removeItem('token');
-  }
-
   private baseUrl = `${environment.baseUrl}api/auth/`; // Replace with your API URL
 
   constructor(private http: HttpClient) {}
 
+  // Store token in local storage for 2 days
+  storeToken(token: string) {
+    const expirationTime = new Date().getTime() + 2 * 24 * 60 * 60 * 1000; // 2 days
+    localStorage.setItem('token', token);
+    localStorage.setItem('token_expiry', expirationTime.toString());
+  }
+
+  // Get token from local storage (check expiration)
+  getToken() {
+    const token = localStorage.getItem('token');
+    const expiry = localStorage.getItem('token_expiry');
+    
+    if (token && expiry && new Date().getTime() < +expiry) {
+      return token;
+    } else {
+      this.logout(); // Remove expired token
+      return null;
+    }
+  }
+
+  // Remove token
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('token_expiry');
+  }
+
+  // Login API
   login(credentials: LoginUserDTO): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}login`, credentials);
   }
 
+  // Register API (sends OTP)
   register(userData: RegisterUserDTO): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}register`, userData);
   }
 
+  // Verify OTP API
+  verifyOTP(email: string, otp: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}verifyOTP`, { email, otp });
+  }
+
+  // Resend OTP API (also starts new timer)
+  resendOTP(email: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}getOTP`, { email });
+  }
 }
 
-  // api/auth/login - POST - Login
-  // api/auth/register - POST - Register
   // api/auth/logout - POST - Logout -- no api
   // api/auth/verify-email - POST - Verify email via OTP
   // api/auth/resend-verfication-email - POST - Resend verification email

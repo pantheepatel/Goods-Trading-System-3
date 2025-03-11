@@ -54,23 +54,23 @@ export class AuthService {
   verifyOTP(email: string, enteredOtp: string,token:string): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`, // Ensure `token` is valid
+      // Authorization: `Bearer ${token}`, // Ensure `token` is valid
     });
     const payload = {
       enteredOtp: enteredOtp,
       email: email 
     };  
     console.log(payload);
-    return this.http.post<any>(`${this.baseUrl}verifyOTP`, payload, {headers,withCredentials: true});
+    return this.http.post<any>(`${this.baseUrl}verifyOTP`, payload, {headers,withCredentials:true});
   }
 
   // Resend OTP API (also starts new timer)
   resendOTP(email: string,token:string): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`, // Ensure you pass a valid JWT token
+      // Authorization: `Bearer ${token}`, // Ensure you pass a valid JWT token
     });
-    return this.http.post<any>(`${this.baseUrl}getOTP`, JSON.stringify(email), {headers});
+    return this.http.post<any>(`${this.baseUrl}getOTP`, JSON.stringify(email), {headers,withCredentials:true});
   }
 }
 

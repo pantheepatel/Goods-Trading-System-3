@@ -1,0 +1,21 @@
+<div class="user-list">
+    <h3>Available Users</h3>
+    <button *ngFor="let user of availableUsers" (click)="startChat(user.userId)">
+        Chat with {{ user.fullName }}
+    </button>
+    <br>
+</div>
+
+<div id="root">
+
+    <div *ngIf="selectedUser" class="chat-info">
+        <h4>Chatting with: {{ selectedUser.fullName }}</h4>
+        <p>Status: <span [ngClass]="onlineStatus === 'Online' ? 'online' : 'offline'">{{ onlineStatus }}</span></p>
+    </div>
+
+    <stream-channel>
+        <stream-channel-header></stream-channel-header>
+        <stream-message-list></stream-message-list>
+        <stream-message-input></stream-message-input>
+    </stream-channel>
+</div>

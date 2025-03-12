@@ -39,7 +39,7 @@ export class UserChatComponent implements OnInit {
 
   availableUsers: UserChatDTO[] = [];
   currentUser: UserChatDTO | null = new UserChatDTO('', '', '', '', new Date());
-  selectedUser: UserChatDTO | null = null;
+  otherUser: UserChatDTO | null = null;
   onlineStatus: string = 'Offline';
 
   constructor(
@@ -65,7 +65,7 @@ export class UserChatComponent implements OnInit {
         }
 
         console.log('Current user:', this.currentUser);
-        
+
         this.loadAvailableUsers();
       },
       error: (err) => console.error('Error fetching current user:', err),
@@ -82,70 +82,106 @@ export class UserChatComponent implements OnInit {
       error: (err) => console.error('Error fetching users:', err),
     });
   }
-// Initialize chat only once
-private async initializeChat(): Promise<void> {
-  if (this.chatService.chatClient.user?.id) {
-    console.log('Chat service already initialized.');
-    return;
+  // Initialize chat only once
+  private async initializeChat(): Promise<void> {
+    if (this.chatService.chatClient) {
+      console.log('Chat service already initialized.');
+      return;
+    }
+
+    if (!this.currentUser) {
+      console.error('User not loaded. Cannot initialize chat.');
+      return;
+    }
+
+    const { userId, email, fullName, userChatToken } = this.currentUser;
+    // console.log('User ID:', email);
+    // console.log('User Chat Token:', userChatToken);
+    if (!email || !userChatToken || !userId) {
+      console.error('Missing required user credentials (email or token).');
+      return;
+    }
+
+    const apiKey = 'st3gknapp8zn';
+    const sanitizedUserId = email.replace(/[^a-zA-Z0-9@_-]/g, '-');
+    console.log(sanitizedUserId)
+    const decodedToken = this.decodeToken(userChatToken);
+    const user: User = { id: decodedToken.user_id, name: fullName, image: `https://getstream.io/random_png/?name=${fullName}` };
+
+    try {
+      console.log('Initializing chat for current user:', user);
+      await this.chatService.init(apiKey, user, userChatToken);
+      // await this.chatService.chatClient.connectUser(user, userChatToken);
+      this.streamI18nService.setTranslation();
+      console.log('Chat initialized successfully.');
+    } catch (error) {
+
+      // const decodedToken = this.decodeToken(userChatToken);
+      // console.log('Decoded Token:', decodedToken);
+      // console.log('User ID in Token:', decodedToken.user_id);
+
+      console.error('Error initializing chat:', error);
+    }
+  }
+  // chatgpt
+  private decodeToken(token: string): any {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(base64));
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  }
+  // copilot
+  // decodeToken(token: string) {
+  //   const base64Url = token.split('.')[1];
+  //   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  //   const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+  //     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  //   }).join(''));
+
+  //   return JSON.parse(jsonPayload);
+  // }
+  // Start a new chat with another user
+  async startChat(otherUserId: string): Promise<void> {
+    if (!this.currentUser) {
+      console.error('Current user not initialized.');
+      return;
+    }
+
+    const otherUser = this.availableUsers.find((user) => user.userId === otherUserId);
+    if (!otherUser) {
+      console.error('Selected user not found.');
+      return;
+    }
+
+    // Ensure chat client is connected
+    await this.initializeChat();
+
+    const members = [this.currentUser.userId, otherUserId].sort();
+    const channelId = `chat_${members[0]}_${members[1]}`;
+
+    try {
+      // Reset channel before opening a new one
+      this.channelService.reset();
+
+      const channel = this.chatService.chatClient.channel('messaging', otherUser.fullName, { members });
+      await channel.create();
+
+      this.channelService.init({ type: 'messaging', id: { $eq: channelId } });
+      this.onlineStatus = channel.state.watcher_count > 0 ? 'Online' : 'Offline';
+
+      console.log('Chat started with:', otherUser.fullName);
+    } catch (error) {
+      console.error('Error starting chat:', error);
+    }
+
+
   }
 
-  if (!this.currentUser) {
-    console.error('User not loaded. Cannot initialize chat.');
-    return;
-  }
 
-  const { userId, fullName, userChatToken } = this.currentUser;
-  if (!userId || !userChatToken) {
-    console.error('Missing required user credentials (userId or token).');
-    return;
-  }
-
-  const apiKey = 'st3gknapp8zn';
-  const user: User = { id: userId, name: fullName };
-
-  try {
-    console.log('Initializing chat with user:', user);
-    await this.chatService.init(apiKey, user, userChatToken);
-    console.log('Chat initialized successfully.');
-  } catch (error) {
-    console.error('Error initializing chat:', error);
-  }
-}
-
-// Start a new chat with another user
-async startChat(otherUserId: string): Promise<void> {
-  if (!this.currentUser) {
-    console.error('Current user not initialized.');
-    return;
-  }
-
-  const otherUser = this.availableUsers.find((user) => user.userId === otherUserId);
-  if (!otherUser) {
-    console.error('Selected user not found.');
-    return;
-  }
-
-  // Ensure chat client is connected
-  await this.initializeChat();
-
-  const members = [this.currentUser.userId, otherUserId].sort();
-  const channelId = `chat_${members[0]}_${members[1]}`;
-
-  try {
-    // Reset channel before opening a new one
-    this.channelService.reset();
-
-    const channel = this.chatService.chatClient.channel('messaging', channelId, { members });
-    await channel.watch();
-
-    this.channelService.init({ type: 'messaging', id: channelId });
-    this.onlineStatus = channel.state.watcher_count > 0 ? 'Online' : 'Offline';
-
-    console.log('Chat started with:', otherUser.fullName);
-  } catch (error) {
-    console.error('Error starting chat:', error);
-  }
-}
 
   // Start chat when the user is selected
   // async startChat(otherUserId: string): Promise<void> {

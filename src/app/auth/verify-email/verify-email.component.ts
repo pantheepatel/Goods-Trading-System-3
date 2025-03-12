@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth.service';
-import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-verify-email',
@@ -14,71 +13,87 @@ import { HttpHeaders } from '@angular/common/http';
 })
 export class VerifyEmailComponent {
   otp: string = '';
-  email: string = JSON.parse(localStorage.getItem('credentials') || '{}')?.email || '';  // Get email from user input
-  token: string = JSON.parse(localStorage.getItem('token') || '{}');  // Get email from user input
-  countdown: number = 5 * 60; // 5 minutes in seconds
-  resendDisabled: boolean = true;
-  interval: any;
-  router: any;
+  email: string = JSON.parse(localStorage.getItem('credentials') || '{}')?.email || '';  
+  token: string = localStorage.getItem('token') || ''; 
 
-  constructor(private authService: AuthService) { }
+  countdown: number = 5 * 60; // 5 minutes
+  resendDisabled: boolean = true;
+  verifyDisabled: boolean = false; 
+  message: string = ''; 
+  isError: boolean = false;
+  interval: any;
+
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
     this.startCountdown();
-    this.resendOTP();
+    this.sendInitialOTP();
   }
 
-  // ✅ Fix: Define the handleInput method
-  handleInput(event: any) {
-    this.otp = event.target.value.replace(/\D/g, ''); // Allow only numbers
+  sendInitialOTP() {
+    this.authService.resendOTP(this.email, this.token).subscribe({
+      next: () => {
+        this.message = `OTP sent successfully to ${this.email}`;
+        this.isError = false;
+      },
+      error: () => {
+        this.message = 'Error sending OTP. Try again later.';
+        this.isError = true;
+      }
+    });
   }
+
+  handleInput(event: any) {
+    this.otp = event.target.value.replace(/\D/g, ''); 
+  }
+
   startCountdown() {
     this.resendDisabled = true;
+    this.verifyDisabled = false;  
     this.countdown = 5 * 60;
 
     this.interval = setInterval(() => {
       if (this.countdown > 0) {
         this.countdown--;
       } else {
-        this.resendOTP();
+        clearInterval(this.interval); // ✅ Prevent infinite requests
+        this.verifyDisabled = true; 
+        this.message = 'OTP expired. Please request a new one.';
+        this.isError = true;
       }
     }, 1000);
   }
 
   verifyOTP() {
-    console.log(this.otp);
-    if (this.otp.length === 6) {
-      // let verifyOTPObj = { "enteredOtp": this.otp, "email": this.email };
-      // Retrieve token from localStorage (if stored during login)
-      // const token = localStorage.getItem('authToken'); // Make sure the token exists
-
-      // const headers = new HttpHeaders({
-      //   'Content-Type': 'application/json',
-      //   Authorization: `Bearer ${token}`, // Send token if required
-      // });
-      console.log('token is : ' + this.token);
+    if (this.otp.length === 6 && !this.verifyDisabled) {
       this.authService.verifyOTP(this.email, this.otp, this.token).subscribe({
         next: () => {
           clearInterval(this.interval);
-          alert('OTP Verified Successfully!');
+          localStorage.setItem('isEmailVerified', 'true');
+          this.message = 'OTP Verified Successfully!';
+          this.isError = false;
+          setTimeout(() => this.router.navigateByUrl('/dashboard'), 1000);
         },
         error: () => {
-          alert('Invalid OTP. Try again.');
+          this.message = 'Invalid OTP. Try again.';
+          this.isError = true;
         }
       });
     }
   }
+
   resendOTP() {
-    console.log(this.email);
-    this.authService.resendOTP(this.email.trim(),this.token).subscribe({
+    if (this.resendDisabled) return; 
+
+    this.authService.resendOTP(this.email.trim(), this.token).subscribe({
       next: () => {
-        alert('New OTP Sent!');
-        this.router.navigate(['/verify-email']);
-        this.startCountdown();
+        this.message = 'New OTP sent successfully!';
+        this.isError = false;
+        this.startCountdown(); 
       },
-      error: (e) => {
-        console.log(e);
-        alert('Error resending OTP.');
+      error: () => {
+        this.message = 'Error resending OTP. Please try again.';
+        this.isError = true;
       }
     });
   }

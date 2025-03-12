@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
       this.errorMessage = 'Email and password are required.';
       return;
     }
-
+  
     const credentials = { email: this.email, password: this.password };
     this.authService.login(credentials).subscribe({
       next: (response) => {
@@ -43,8 +43,13 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('credentials', JSON.stringify(credentials));
         localStorage.setItem('token', JSON.stringify(response.token));
         localStorage.setItem('token_expiration', expiration.toString());
-
-        this.router.navigate(['auth/verify-email']);
+  
+        // ✅ Check if email has already been verified
+        if (localStorage.getItem('isEmailVerified') === 'true') {
+          this.router.navigate(['/dashboard']);  
+        } else {
+          this.router.navigate(['/auth/verify-email']); 
+        }
       },
       error: (err) => {
         console.error('Login failed:', err);
@@ -52,6 +57,7 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+  
 
   checkTokenExpiration() {
     const token = localStorage.getItem('token');

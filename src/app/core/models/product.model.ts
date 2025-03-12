@@ -29,19 +29,6 @@ export class Product {
     ) { }
 }
 
-export class CreateProduct {
-    constructor(
-        public title: string,
-        public model: string,
-        public description: string,
-        public price: number,
-        public city: string,
-        public category: ProductCategory,
-        public purchaseYear: number,
-        public images: string[],
-        public status: ProductStatus
-    ) { }
-}
 export class AddProductDTO {
     constructor(
         public title: string,
@@ -49,9 +36,9 @@ export class AddProductDTO {
         public description: string,
         public price: number,
         public city: string,
-        public categoryId: string,
+        public email : string,
         public purchaseYear: Date,
-        public images: string[]
+        public images: string[],
     ) { }
 }
 export class UpdateProductDTO {

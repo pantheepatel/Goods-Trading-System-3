@@ -3,18 +3,23 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Product } from '../../core/models/product.model';
+import { AddBikeDTO } from '../../core/models/category.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private apiGetProductsUrl = `${environment.baseUrl}api/product`; // Ensure this matches your .NET API URL
+  private url = `${environment.baseUrl}api/product`; // Ensure this matches your .NET API URL
 
   constructor(private http: HttpClient) {}
 
   // api/product - GET - Retrieve all products
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.apiGetProductsUrl);
+    return this.http.get<Product[]>(this.url);
+  }
+
+  addBikeProduct(category: string, bikeData: AddBikeDTO): Observable<any> {
+    return this.http.post(`${this.url}/sell/${category}`, bikeData);
   }
 
   // api/product/{id} - GET - Retrieve a specific product - view product details - product-view component

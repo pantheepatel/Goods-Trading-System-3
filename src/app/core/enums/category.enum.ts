@@ -1,6 +1,6 @@
 export enum ProductCategory {
     Car = "Car",
-    Moped = "Moped",
+    Bike = "Bike",
     Furniture = "Furniture",
     Mobile = "Mobile",
     Electronics = "Electronics",

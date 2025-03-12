@@ -5,6 +5,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RegisterComponent } from './auth/register/register.component';
 import { VerifyEmailComponent } from './auth/verify-email/verify-email.component';
+import { ProductAddComponent } from './product/product-add/product-add.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -12,6 +13,7 @@ export const routes: Routes = [
   { path: 'auth/register', component: RegisterComponent },
   { path: 'auth/verify-email', component: VerifyEmailComponent },
   { path: 'dashboard', component: DashboardComponent },
+  { path: 'sell/:category', component: ProductAddComponent },
   // { path: 'auth/**', redirectTo: 'auth/login' }, // Redirect unknown route of auth to login
   { path: '**', redirectTo: 'dashboard' } // Redirect unknown routes, or can show 404 page
 ];

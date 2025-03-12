@@ -1,1 +1,66 @@
-<p>navbar works!</p>
+<!-- Navbar -->
+<nav class="bg-white shadow-md p-4 flex justify-between items-center">
+    <!-- Left Section: Logo & Search -->
+    <div class="flex items-center gap-4">
+      <a routerLink="/" class="text-xl font-semibold text-blue-600">Goods Trading</a>
+  
+      <!-- Category Filter -->
+      <select class="border rounded-lg p-2 text-gray-700">
+        <option value="">All Categories</option>
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category }}
+        </option>
+      </select>
+  
+      <!-- Search Bar -->
+      <input type="text" placeholder="Search..." 
+        class="border rounded-lg px-4 py-2 w-72 focus:ring focus:ring-blue-300" />
+    </div>
+  
+    <!-- Right Section: Profile Menu & Sell Button -->
+    <div class="flex items-center space-x-4">
+      <!-- Sell Product Button (Opens Modal) -->
+      <button (click)="openModal()" 
+        class="px-5 py-2 rounded-lg font-medium text-white bg-blue-500 hover:bg-blue-600 transition">
+        + Sell Product
+      </button>
+  
+      <div class="relative">
+        <button (click)="toggleProfileMenu()" class="flex items-center space-x-2">
+          <div class="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full">
+            U
+          </div>
+          <span class="hidden md:block font-medium text-gray-700">User</span>
+        </button>
+  
+        <!-- Dropdown Menu -->
+        <div *ngIf="isProfileMenuOpen" 
+          class="absolute right-0 bg-white shadow-lg rounded-lg w-48 mt-2">
+          <ul class="py-2">
+            <li><a routerLink="/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
+            <li><a routerLink="/favourites" class="block px-4 py-2 hover:bg-gray-100">Favourites</a></li>
+            <li><a routerLink="/my-ads" class="block px-4 py-2 hover:bg-gray-100">My Ads</a></li>
+            <li class="border-t">
+              <button class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">Logout</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- 🟢 Improved Subnavbar (Categories) -->
+  <div class="bg-gray-100 shadow-inner">
+    <div class="container mx-auto py-3 overflow-x-auto whitespace-nowrap">
+      <div class="flex items-center justify-center space-x-4 md:space-x-6">
+        <span *ngFor="let category of categories" 
+          class="cursor-pointer px-4 py-2 text-gray-700 bg-white rounded-lg shadow hover:bg-blue-500 hover:text-white transition">
+          {{ category }}
+        </span>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 🟢 Sell Product Modal (Appears on Click) -->
+  <app-sell-modal *ngIf="isModalOpen" (closeModal)="closeModal()"></app-sell-modal>
+  

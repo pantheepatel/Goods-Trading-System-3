@@ -1,5 +1,5 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
-    <div *ngFor="let product of products" class="bg-white shadow-lg rounded-xl overflow-hidden">
+    <div *ngFor="let product of products" (click)="viewProduct(product.productId)" class="bg-white shadow-lg rounded-xl overflow-hidden">
       
       <!-- Use product.image instead of product.images[0] -->
       <img [src]="product.image ? product.image : 'assets/no-image.png'"

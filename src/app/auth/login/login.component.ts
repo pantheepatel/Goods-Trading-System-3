@@ -39,6 +39,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(credentials).subscribe({
       next: (response) => {
         console.log(response);
+        console.log(response.isEmailVerified);
         const expiration = new Date().getTime() + 2 * 24 * 60 * 60 * 1000; // 2 days in ms
         localStorage.setItem('credentials', JSON.stringify(credentials));
         localStorage.setItem('token', JSON.stringify(response.token));

@@ -43,6 +43,9 @@ export class ProductService {
   }
 
   // api/product/{id} - GET - Retrieve a specific product - view product details - product-view component
+  getProductDetails(productId: string): Observable<any> {
+    return this.http.get<any>(`${this.url}/GetProductDetails/${productId}`);
+  }
 
   // api/product - POST - Create a new product - product-add component
 

@@ -63,3 +63,6 @@ export class AppComponent implements OnInit, OnDestroy {
 // add footer to show contact details.
 // add validation for password, rightnow it is accepting any password of any length and any character.
 // add validation for email, rightnow it is accepting any email.
+// add validation for add product
+// OTP not sent error, even if it sent successfully.
+// add general option for chat in navbar, path is mentioned in routes file.

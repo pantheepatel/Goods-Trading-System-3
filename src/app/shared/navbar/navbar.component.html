@@ -25,7 +25,7 @@
       + Sell Product
     </button>
 
-    <a routerLink="/auth/verify-email">
+    <a routerLink="/auth/verify-email" *ngIf="!isEmailVerified">
       <button class="px-5 py-2 rounded-lg font-medium text-white bg-blue-500 hover:bg-blue-600 transition">
         Verify
       </button>

@@ -29,6 +29,19 @@ export class Product {
     ) { }
 }
 
+export class GetProductDTO {
+    constructor(
+        public readonly productId: string,
+        public title: string,
+        public model: string,
+        public price: number,
+        public city: string,
+        public postedDate : Date,
+        public categoryName : string,
+        public image: string,
+    ){}
+}
+
 export class AddProductDTO {
     constructor(
         public title: string,

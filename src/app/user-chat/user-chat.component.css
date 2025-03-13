@@ -1,1 +1,2 @@
-@import 'stream-chat-angular/src/assets/styles/css/index.css';
+/* @import 'stream-chat-angular/src/assets/styles/css/index.css'; */
+@import url('../../../node_modules/stream-chat-angular/src/assets/styles/css/index.css');

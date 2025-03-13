@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { UserChatService } from '../services/User/user-chat.service';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { User, Channel } from 'stream-chat';
+import { User, Channel, StreamChat } from 'stream-chat';
 import { ChatClientService, ChannelService, StreamAutocompleteTextareaModule, StreamChatModule, StreamI18nService } from 'stream-chat-angular';
 import { UserChatDTO } from '../core/models/user.model';
 import {
@@ -41,6 +41,8 @@ export class UserChatComponent implements OnInit {
   currentUser: UserChatDTO | null = new UserChatDTO('', '', '', '', new Date());
   otherUser: UserChatDTO | null = null;
   onlineStatus: string = 'Offline';
+  apiKey = 'st3gknapp8zn';
+  client = StreamChat.getInstance(this.apiKey);
 
   constructor(
     private chatService: ChatClientService,
@@ -82,6 +84,7 @@ export class UserChatComponent implements OnInit {
       error: (err) => console.error('Error fetching users:', err),
     });
   }
+
   // Initialize chat only once
   private async initializeChat(): Promise<void> {
     if (this.chatService.chatClient) {
@@ -103,7 +106,7 @@ export class UserChatComponent implements OnInit {
     }
 
     const apiKey = 'st3gknapp8zn';
-    const sanitizedUserId = email.replace(/[^a-zA-Z0-9@_-]/g, '-');
+    const sanitizedUserId = email.replace(/[^a-zA-Z0-9@_-]/g, '');
     console.log(sanitizedUserId)
     const decodedToken = this.decodeToken(userChatToken);
     const user: User = { id: decodedToken.user_id, name: fullName, image: `https://getstream.io/random_png/?name=${fullName}` };
@@ -111,9 +114,12 @@ export class UserChatComponent implements OnInit {
     try {
       console.log('Initializing chat for current user:', user);
       await this.chatService.init(apiKey, user, userChatToken);
-      // await this.chatService.chatClient.connectUser(user, userChatToken);
+      await this.client.connectUser(user, userChatToken);
       this.streamI18nService.setTranslation();
       console.log('Chat initialized successfully.');
+      // Test query
+      const users = await this.client.queryUsers({});
+      console.log('Users:', users);
     } catch (error) {
 
       // const decodedToken = this.decodeToken(userChatToken);
@@ -134,16 +140,7 @@ export class UserChatComponent implements OnInit {
       return null;
     }
   }
-  // copilot
-  // decodeToken(token: string) {
-  //   const base64Url = token.split('.')[1];
-  //   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  //   const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-  //     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  //   }).join(''));
 
-  //   return JSON.parse(jsonPayload);
-  // }
   // Start a new chat with another user
   async startChat(otherUserId: string): Promise<void> {
     if (!this.currentUser) {
@@ -161,15 +158,17 @@ export class UserChatComponent implements OnInit {
     await this.initializeChat();
 
     const members = [this.currentUser.userId, otherUserId].sort();
-    const channelId = `chat_${members[0]}_${members[1]}`;
+    const channelId1 = `chat_${members[0]}_${members[1]}`;
+    const channelId = channelId1.substring(0, 64);
+    console.log("chat id: " + channelId);
+    console.log("chat id: " + channelId.length);
 
     try {
       // Reset channel before opening a new one
       this.channelService.reset();
 
-      const channel = this.chatService.chatClient.channel('messaging', otherUser.fullName, { members });
+      const channel = this.chatService.chatClient.channel('messaging', channelId, { members });
       await channel.create();
-
       this.channelService.init({ type: 'messaging', id: { $eq: channelId } });
       this.onlineStatus = channel.state.watcher_count > 0 ? 'Online' : 'Offline';
 
@@ -177,10 +176,29 @@ export class UserChatComponent implements OnInit {
     } catch (error) {
       console.error('Error starting chat:', error);
     }
-
-
   }
 
+  async ensureUserExists(userExist: UserChatDTO) {
+    try {
+      // Check if the user exists
+      const user = await this.client.queryUsers({ id: userExist.userId});
+      if (user.users.length === 0) {
+        console.log(`User ${userExist.userId} not found. Creating...`);
+
+        // Create the user
+        await this.client.upsertUser({
+          id: userExist.userId,
+          name: userExist.fullName,
+          image: `https://getstream.io/random_png/?name=${userExist.fullName}`,
+        });
+        console.log(`User ${userExist.userId} created.`);
+      } else {
+        console.log(`User ${userExist.userId} already exists.`);
+      }
+    } catch (error) {
+      console.error('Error ensuring user exists:', error);
+    }
+  }
 
 
   // Start chat when the user is selected

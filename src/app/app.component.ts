@@ -28,7 +28,7 @@ export class AppComponent implements OnInit, OnDestroy {
   
     if (token) {
 
-      this.router.navigate(['/dashboard']);
+      // this.router.navigate(['/dashboard']);
     } else {
 
       alert('You need to login first.');

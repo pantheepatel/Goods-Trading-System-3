@@ -1,8 +1,22 @@
-<p>dashboard works!</p>
-<h2>Product List</h2>
-<ul>
-    <p *ngIf="products.length==0">No Products or no backend connection</p>
-    <li *ngFor="let product of products">
-        <strong>{{ product.title }}</strong> - ${{ product.price }}
-    </li>
-</ul>
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+    <div *ngFor="let product of products" class="bg-white shadow-lg rounded-xl overflow-hidden">
+      
+      <!-- Use product.image instead of product.images[0] -->
+      <img [src]="product.image ? product.image : 'assets/no-image.png'"
+           alt="Product Image" 
+           class="w-full h-48 object-cover">
+  
+      <div class="p-4">
+        <h2 class="text-lg font-semibold text-gray-800">{{ product.title }}</h2>
+        <p class="text-sm text-gray-500">
+            {{ product.city }} • <span class="text-blue-500">{{ product?.relativeDate }}</span>
+          </p>            
+        <p class="text-lg font-bold text-blue-600 mt-2">₹{{ product.price }}</p>
+        
+        <div class="flex justify-between mt-4">
+          <span class="text-sm px-3 py-1 bg-gray-200 rounded-lg">{{ product.categoryName }}</span>
+          <button class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600">View</button>
+        </div>
+      </div>
+    </div>
+</div>

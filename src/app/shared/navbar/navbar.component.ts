@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductCategory } from '../../core/enums/category.enum';
 import { SellModalComponent } from '../../product/sell-modal/sell-modal.component';
+import { Product } from '../../core/models/product.model';
+import { GujaratCity } from '../../core/enums/cities.enum';
 
 @Component({
   selector: 'app-navbar',
@@ -14,7 +16,7 @@ import { SellModalComponent } from '../../product/sell-modal/sell-modal.componen
 export class NavbarComponent {
   isProfileMenuOpen = false;
   categories = Object.values(ProductCategory);
-  cities = ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Gandhinagar'];
+  cities = Object.values(GujaratCity);
   
   toggleProfileMenu() {
     this.isProfileMenuOpen = !this.isProfileMenuOpen;

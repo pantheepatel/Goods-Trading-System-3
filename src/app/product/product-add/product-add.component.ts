@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GujaratCity } from '../../core/enums/cities.enum';
-import { AddBikeDTO } from '../../core/models/category.model';
+import { AddBikeDTO, AddCarDTO, AddElectronicsDTO, AddFurnitureDTO, AddMobileDTO } from '../../core/models/category.model';
 import { ProductService } from '../../services/product/product.service';
 @Component({
   selector: 'app-product-add',
@@ -31,7 +31,7 @@ export class ProductAddComponent implements OnInit {
   details: string = '';
   fuelType: string = '';
   transmissionType: string = '';
-  ownerCount: number | null = null;
+  ownerCount: number = 1;
   kilometersDriven: number = 0;
   mobileType: string = '';
   bikeType: string = '';
@@ -39,9 +39,9 @@ export class ProductAddComponent implements OnInit {
   electronicType: string = '';
   brand: string = '';
   operatingSystem: string = '';
-  storageCapacity: number | null = null;
-  warentyPeriod: number | null = null;
-  ram: number | null = null;
+  storageCapacity: number = 0;
+  warentyPeriod: number = 1;
+  ram: number = 0;
 
   cities = Object.values(GujaratCity);
 
@@ -194,32 +194,84 @@ export class ProductAddComponent implements OnInit {
       return;
     }
 
+    const formattedPurchaseYear = new Date(this.purchaseYear);
+
     //Adding Bike Data
-    const bikeData: AddBikeDTO = new AddBikeDTO(
-      this.title,
-      this.model,
-      this.details,
-      this.price,
-      this.city,
-      storedEmail,
-      this.purchaseYear,
-      this.uploadedImageUrls,
-      this.brand,
-      this.fuelType,
-      this.kilometersDriven,
-      this.bikeType
+    switch (this.category) {
+      case 'bike':
+        const bikeData: AddBikeDTO = new AddBikeDTO(
+          this.title, this.model, this.details, this.price, this.city, storedEmail, formattedPurchaseYear,
+          this.uploadedImageUrls, this.brand, this.fuelType, this.kilometersDriven, this.bikeType
+        );
+        this.productService.addBikeProduct('bike', bikeData).subscribe({
+          next: (response) => console.log('Bike product created successfully:', response),
+          error: (error) => {
+            console.error('Error creating bike product:', error);
+            this.errorMessage = 'Failed to create bike product. Please try again.';
+          }
+        });
+        break;
 
-    )
+      case 'mobile':
+        const mobileData: AddMobileDTO = new AddMobileDTO(
+          this.title, this.model, this.details, this.price, this.city, storedEmail, formattedPurchaseYear,
+          this.uploadedImageUrls, this.brand, this.operatingSystem, this.storageCapacity, this.ram
+        );
+        this.productService.addMobileProduct('mobile', mobileData).subscribe({
+          next: (response) => console.log('Mobile product created successfully:', response),
+          error: (error) => {
+            console.error('Error creating mobile product:', error);
+            this.errorMessage = 'Failed to create mobile product. Please try again.';
+          }
+        });
+        break;
 
-    this.productService.addBikeProduct('bike', bikeData).subscribe({
-      next: (response) => {
-        console.log('Product created successfully:', response);
-      },
-      error: (error) => {
-        console.error('Error creating product:', error);
-        this.errorMessage = 'Failed to create product. Please try again.';
-      }
-    });
+      case 'car':
+        const carData: AddCarDTO = new AddCarDTO(
+          this.title, this.model, this.details, this.price, this.city, storedEmail, formattedPurchaseYear,
+          this.uploadedImageUrls, this.brand, this.fuelType, this.transmissionType, this.kilometersDriven, this.ownerCount
+        );
+        this.productService.addCarProduct('car', carData).subscribe({
+          next: (response) => console.log('Car product created successfully:', response),
+          error: (error) => {
+            console.error('Error creating car product:', error);
+            this.errorMessage = 'Failed to create car product. Please try again.';
+          }
+        });
+        break;
+
+      case 'electronics':
+        const electronicsData: AddElectronicsDTO = new AddElectronicsDTO(
+          this.title, this.model, this.details, this.price, this.city, storedEmail, formattedPurchaseYear,
+          this.uploadedImageUrls, this.brand, this.warentyPeriod, this.electronicType
+        );
+        this.productService.addElectronicsProduct('electronics', electronicsData).subscribe({
+          next: (response) => console.log('Electronics product created successfully:', response),
+          error: (error) => {
+            console.error('Error creating Electronics product:', error);
+            this.errorMessage = 'Failed to create Electronics product. Please try again.';
+          }
+        });
+        break;
+      case 'furniture':
+        const furnitureData: AddFurnitureDTO = new AddFurnitureDTO(
+          this.title, this.model, this.details, this.price, this.city, storedEmail, formattedPurchaseYear,
+          this.uploadedImageUrls, this.furnitureType
+        );
+        this.productService.addFurnitureProduct('furniture', furnitureData).subscribe({
+          next: (response) => console.log('Furniture product created successfully:', response),
+          error: (error) => {
+            console.error('Error creating Furniture product:', error);
+            this.errorMessage = 'Failed to create Furniture product. Please try again.';
+          }
+        });
+        break;
+
+      
+      default:
+        this.errorMessage = 'Invalid category selected.';
+        break;
+    }
 
     console.log('Form submitted successfully!', {
       category: this.category,

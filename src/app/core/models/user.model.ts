@@ -53,3 +53,12 @@ export class UserProfileDTO {
         public favouriteProducts: Product[] = [] // Many-to-Many
     ) { }
 }
+export class UserChatDTO {
+    constructor(
+        public userId: string,
+        public fullName: string,
+        public email: string,
+        public userChatToken: string,
+        public verificationDate: Date
+    ) {}
+}

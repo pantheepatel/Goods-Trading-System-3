@@ -1,16 +1,19 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Route, Router } from '@angular/router';
+import { CommonModule } from '@angular/common'; // ✅ Import CommonModule
 import { ProductService } from '../../services/product/product.service';
 
 @Component({
   selector: 'app-product-view',
-  imports: [],
+  standalone: true, // ✅ Ensure it's a standalone component
+  imports: [CommonModule], // ✅ Enable *ngIf and *ngFor directives
   templateUrl: './product-view.component.html',
   styleUrl: './product-view.component.css'
 })
 export class ProductViewComponent {
   product!: any;
   userId: string = "";
+  currentSlide = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -42,6 +45,25 @@ export class ProductViewComponent {
         console.log(this.userId)
       },
       error: (err) => console.error('Error fetching product:', err),
+    });
+  }
+
+  nextSlide() {
+    this.currentSlide = (this.currentSlide + 1) % this.product.commonDetails.images.length;
+    console.log("nn");
+    
+  }
+
+  // Move to the previous slide
+  prevSlide() {
+    console.log("pp");
+
+    this.currentSlide = (this.currentSlide - 1 + this.product.commonDetails.images.length) % this.product.commonDetails.images.length;
+  }
+
+  viewProduct(productId: string): void {
+    this.router.navigate(['/product/view', productId]).then(() => {
+      window.location.reload();
     });
   }
 }

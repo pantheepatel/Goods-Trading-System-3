@@ -15,13 +15,7 @@ export class ProductService {
 
   // api/product - GET - Retrieve all products on the dashboard
   getProducts(email: string): Observable<GetProductDTO[]> {
-    const requestBody =  email ;
-    console.log("Sending Request:", JSON.stringify(requestBody)); // Debugging
-    return this.http.post<GetProductDTO[]>(
-      `${this.url}/get/Products`, 
-      JSON.stringify(requestBody), 
-      { headers: { 'Content-Type': 'application/json' } }
-    );
+    return this.http.get<GetProductDTO[]>(`${this.url}/get/Products/${email}`);
   }
   
   

@@ -1,2 +1,163 @@
-<p>product-view works!</p>
-<button (click)="goToChat()" class="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600">Chat</button>
+<div *ngIf="product" class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
+    <!-- Product Title -->
+    <h2 class="text-3xl font-bold text-gray-800">{{ product.commonDetails.title }}</h2>
+  
+    <div id="carouselExample" class="relative w-full max-w-3xl mx-auto">
+        <!-- Carousel items -->
+        <div class="carousel-inner relative overflow-hidden w-full">
+          <!-- Loop through images dynamically -->
+          <div *ngFor="let image of product.commonDetails.images; let i = index" class="carousel-item float-left w-full"
+               [ngClass]="{'hidden': i !== currentSlide}">
+            <img [src]="image" class="block w-full h-64 object-contain" alt="Product Image">
+          </div>
+        </div>
+      
+        <!-- Carousel controls -->
+        <button class="absolute top-1/2 left-0 transform -translate-y-1/2 px-4 py-2 text-white bg-black bg-opacity-50 hover:bg-opacity-70" (click)="prevSlide()">
+          &#10094;
+        </button>
+        <button class="absolute top-1/2 right-0 transform -translate-y-1/2 px-4 py-2 text-white bg-black bg-opacity-50 hover:bg-opacity-70" (click)="nextSlide()">
+          &#10095;
+        </button>
+      </div>
+      
+      <!-- Tailwind JavaScript for carousel functionality -->
+      <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.carousel-item');
+        const totalSlides = slides.length;
+      
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+      
+        function showSlide(index) {
+          if (index >= totalSlides) currentSlide = 0;
+          if (index < 0) currentSlide = totalSlides - 1;
+          slides.forEach((slide, i) => {
+            slide.style.display = i === currentSlide ? 'block' : 'none';
+          });
+        }
+      
+        nextBtn.addEventListener('click', () => {
+          currentSlide++;
+          showSlide(currentSlide);
+        });
+      
+        prevBtn.addEventListener('click', () => {
+          currentSlide--;
+          showSlide(currentSlide);
+        });
+      
+        // Initialize carousel
+        showSlide(currentSlide);
+      </script>
+      
+
+
+
+    <!-- Product Images -->
+    <div class="flex space-x-2 overflow-x-auto mt-4">
+      <img *ngFor="let image of product.commonDetails.images" [src]="image" alt="Product Image" 
+        class="w-32 h-32 object-cover rounded-md shadow-md">
+    </div>
+  
+    <!-- Product Details -->
+    <div class="mt-4 space-y-2">
+      <p><span class="font-semibold">Model:</span> {{ product.commonDetails.model }}</p>
+      <p><span class="font-semibold">Price:</span> ₹{{ product.commonDetails.price }}</p>
+      <p><span class="font-semibold">City:</span> {{ product.commonDetails.city }}</p>
+      <p><span class="font-semibold">Posted On:</span> {{ product.commonDetails.postedDate }}</p>
+      <p><span class="font-semibold">Purchase Year:</span> {{ product.commonDetails.purchaseYear  }}</p>
+      <p><span class="font-semibold">Category:</span> {{ product.commonDetails.categoryName }}</p>
+      <p><span class="font-semibold">Description:</span> {{ product.commonDetails.description }}</p>
+    </div>
+  
+    <!-- Specific Details -->
+    <div *ngIf="product.commonDetails.categoryName === 'Bike'" class="mt-4">
+      <h3 class="text-xl font-semibold">Specifications</h3>
+      <ul class="list-disc pl-5">
+        <li *ngIf="product.specificDetails.brand"><span class="font-semibold">Brand:</span> {{ product.specificDetails.brand }}</li>
+        <li *ngIf="product.specificDetails.fuelType"><span class="font-semibold">Fuel Type:</span> {{ product.specificDetails.fuelType }}</li>
+        <li *ngIf="product.specificDetails.kilometersDriven"><span class="font-semibold">Kilometers Driven:</span> {{ product.specificDetails.kilometersDriven }}</li>
+        <li *ngIf="product.specificDetails.bikeType"><span class="font-semibold">Bike Type:</span> {{ product.specificDetails.bikeType }}</li>
+      </ul>
+    </div>
+    <div *ngIf="product.commonDetails.categoryName === 'Car'" class="mt-4">
+        <!-- "brand": "Toyota",
+        "fuelType": "Hybrid",
+        "transmissionType": "Automatic",
+        "kilometersDriven": 15000,
+        "ownerCount": 1 -->
+        <h3 class="text-xl font-semibold">Specifications</h3>
+        <ul class="list-disc pl-5">
+          <li *ngIf="product.specificDetails.brand"><span class="font-semibold">Brand:</span> {{ product.specificDetails.brand }}</li>
+          <li *ngIf="product.specificDetails.fuelType"><span class="font-semibold">Fuel Type:</span> {{ product.specificDetails.fuelType }}</li>
+          <li *ngIf="product.specificDetails.kilometersDriven"><span class="font-semibold">Kilometers Driven:</span> {{ product.specificDetails.kilometersDriven }}</li>
+          <li *ngIf="product.specificDetails.transmissionType"><span class="font-semibold">Transmission Type:</span> {{ product.specificDetails.transmissionType }}</li>
+          <li *ngIf="product.specificDetails.ownerCount"><span class="font-semibold">Owner Count:</span> {{ product.specificDetails.ownerCount }}</li>
+        </ul>
+      </div>
+    <div *ngIf="product.commonDetails.categoryName === 'Mobile'" class="mt-4">
+    <h3 class="text-xl font-semibold">Specifications</h3>
+    <ul class="list-disc pl-5">
+        <li *ngIf="product.specificDetails.brand"><span class="font-semibold">Brand:</span> {{ product.specificDetails.brand }}</li>
+        <li *ngIf="product.specificDetails.operatingSystem"><span class="font-semibold">Operating System:</span> {{ product.specificDetails.operatingSystem }}</li>
+        <li *ngIf="product.specificDetails.ram"><span class="font-semibold">RAM :</span> {{ product.specificDetails.ram }} GB</li>
+        <li *ngIf="product.specificDetails.storageCapacity"><span class="font-semibold">Storage Capacity:</span> {{ product.specificDetails.storageCapacity }} GB</li>
+    </ul>
+    </div>
+    <div *ngIf="product.commonDetails.categoryName === 'Electronics'" class="mt-4">
+        <h3 class="text-xl font-semibold">Specifications</h3>
+        <ul class="list-disc pl-5">
+            <li *ngIf="product.specificDetails.brand"><span class="font-semibold">Brand:</span> {{ product.specificDetails.brand }}</li>
+            <li *ngIf="product.specificDetails.electronicsType"><span class="font-semibold">Electronic Type:</span> {{ product.specificDetails.electronicsType }}</li>
+            <li *ngIf="product.specificDetails.warrantyPeriod"><span class="font-semibold">Warranty Period:</span> {{ product.specificDetails.warrantyPeriod }} Months</li>
+            <li *ngIf="product.specificDetails.storageCapacity"><span class="font-semibold">Storage Capacity:</span> {{ product.specificDetails.storageCapacity }} GB</li>
+        </ul>
+        </div>
+        <div *ngIf="product.commonDetails.categoryName === 'Furniture'" class="mt-4">
+            <h3 class="text-xl font-semibold">Specifications</h3>
+            <ul class="list-disc pl-5">
+                <li *ngIf="product.specificDetails.furnitureType"><span class="font-semibold">Furniture Type:</span> {{ product.specificDetails.furnitureType }}</li>
+            </ul>
+            </div>
+    
+
+    <!-- Seller Information -->
+    <div class="mt-6 p-4 bg-gray-100 rounded-lg">
+      <h3 class="text-lg font-semibold">Seller Details</h3>
+      <p><span class="font-semibold">Name:</span> {{ product.sellerDetails.fullName }}</p>
+      <p><span class="font-semibold">Email:</span> {{ product.sellerDetails.email }}</p>
+      <p><span class="font-semibold">Location:</span> {{ product.sellerDetails.city }}</p>
+  
+      <button 
+        (click)="goToChat()" 
+        class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+        Chat with Seller
+      </button>
+    </div>
+  
+    <!-- Other Products from the Same Seller -->
+    <div *ngIf="product.otherProductsFromSameUser.length > 0" class="mt-8">
+      <h3 class="text-xl font-semibold">Other Listings by Seller</h3>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+        <div *ngFor="let item of product.otherProductsFromSameUser" 
+          class="bg-white p-4 shadow-md rounded-lg">
+          <img [src]="item.image" alt="{{ item.title }}" class="w-full h-32 object-cover rounded-md">
+          <h4 class="mt-2 text-lg font-semibold">{{ item.title }}</h4>
+          <p class="text-sm text-gray-600">{{ item.category }}</p>
+          <p class="text-sm font-semibold">₹{{ item.price }}</p>
+          <button (click)="viewProduct(item.productId)" 
+            class="mt-2 bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
+            View
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Loading Message -->
+  <div *ngIf="!product" class="text-center text-gray-500 mt-10">
+    <p>Loading product details...</p>
+  </div>
+  

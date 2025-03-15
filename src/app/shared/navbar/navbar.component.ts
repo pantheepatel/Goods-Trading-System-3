@@ -5,6 +5,7 @@ import { ProductCategory } from '../../core/enums/category.enum';
 import { SellModalComponent } from '../../product/sell-modal/sell-modal.component';
 import { Product } from '../../core/models/product.model';
 import { GujaratCity } from '../../core/enums/cities.enum';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -18,9 +19,17 @@ export class NavbarComponent {
   categories = Object.values(ProductCategory);
   cities = Object.values(GujaratCity);
   isEmailVerified: boolean = false;
-
+  credentials = localStorage.getItem('credentials');
+  email = "User"
+  constructor(private router: Router) {} 
   ngOnInit() {
     this.isEmailVerified = localStorage.getItem('isEmailVerified') === 'true';
+    if (this.credentials) {
+      const parsedCredentials = JSON.parse(this.credentials); // Convert string to object
+      this.email = parsedCredentials.email; // Extract email
+    } else {
+      this.email = ''; // Handle case when credentials are not found
+    }
   }
 
   toggleProfileMenu() {
@@ -30,6 +39,10 @@ export class NavbarComponent {
 
   openModal() {
     this.isModalOpen = true;
+  }
+
+  OpenChat(){
+    this.router.navigate(['/product/view']);
   }
 
   closeModal() {

@@ -20,6 +20,13 @@
   <!-- Right Section: Profile Menu & Sell Button -->
   <div class="flex items-center space-x-4">
     <!-- Sell Product Button (Opens Modal) -->
+
+    <button (click)="OpenChat()"
+    class="px-5 py-2 rounded-lg font-medium text-white bg-blue-500 hover:bg-blue-600 transition">
+    Chat
+  </button>
+
+
     <button (click)="openModal()"
       class="px-5 py-2 rounded-lg font-medium text-white bg-blue-500 hover:bg-blue-600 transition">
       + Sell Product
@@ -33,10 +40,7 @@
 
     <div class="relative">
       <button (click)="toggleProfileMenu()" class="flex items-center space-x-2">
-        <div class="w-10 h-10 bg-blue-500 text-white flex items-center justify-center rounded-full">
-          U
-        </div>
-        <span class="hidden md:block font-medium text-gray-700">User</span>
+        <img [src]="'https://ui-avatars.com/api/?name=' + email + '&size=45'" alt="Profile Image" class="rounded-full">
       </button>
 
       <!-- Dropdown Menu -->

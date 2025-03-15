@@ -1,10 +1,12 @@
-<ng-container *ngIf="showNavbarAndFooter">
-    <app-navbar></app-navbar>
-  </ng-container>
-  <app-loader></app-loader>
-  <router-outlet></router-outlet>
-  
+<div class="flex flex-col h-screen">
   <ng-container *ngIf="showNavbarAndFooter">
-    <app-footer></app-footer>
-  </ng-container>
+      <app-navbar></app-navbar>
+    </ng-container>
+    <app-loader></app-loader>
+    <router-outlet></router-outlet>
+    
+    <ng-container *ngIf="showNavbarAndFooter">
+      <app-footer></app-footer>
+    </ng-container>
+</div>
   

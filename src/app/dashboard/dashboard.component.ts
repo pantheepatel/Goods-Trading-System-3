@@ -64,6 +64,10 @@ export class DashboardComponent implements OnInit {
   }
 
   viewProduct(productId: string): void {
-    this.router.navigate(['/product/view', productId]);
+    if(localStorage.getItem('isEmailVerified')==='true'){
+      this.router.navigate(['/product/view', productId]);
+    }else{
+      alert("Please verify email to view products.");
+    }
   }
 }

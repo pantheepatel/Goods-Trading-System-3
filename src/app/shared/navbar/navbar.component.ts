@@ -9,7 +9,7 @@ import { GujaratCity } from '../../core/enums/cities.enum';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink,SellModalComponent],
+  imports: [CommonModule, RouterLink, SellModalComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
@@ -17,7 +17,12 @@ export class NavbarComponent {
   isProfileMenuOpen = false;
   categories = Object.values(ProductCategory);
   cities = Object.values(GujaratCity);
-  
+  isEmailVerified: boolean = false;
+
+  ngOnInit() {
+    this.isEmailVerified = localStorage.getItem('isEmailVerified') === 'true';
+  }
+
   toggleProfileMenu() {
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
   }

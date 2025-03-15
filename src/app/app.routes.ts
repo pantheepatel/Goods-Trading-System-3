@@ -7,6 +7,7 @@ import { RegisterComponent } from './auth/register/register.component';
 import { VerifyEmailComponent } from './auth/verify-email/verify-email.component';
 import { ProductAddComponent } from './product/product-add/product-add.component';
 import { UserChatComponent } from './user-chat/user-chat.component';
+import { ProductViewComponent } from './product/product-view/product-view.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'user/chat', pathMatch: 'full' },
@@ -16,6 +17,8 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'sell/:category', component: ProductAddComponent },
   { path: 'user/chat', component: UserChatComponent },
+  { path: 'product/view/:productId', component: ProductViewComponent },
+  { path: 'chat/:userId', component: UserChatComponent },
   // { path: 'auth/**', redirectTo: 'auth/login' }, // Redirect unknown route of auth to login
   { path: '**', redirectTo: 'user/chat' } // Redirect unknown routes, or can show 404 page
 ];

@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { UserChatService } from '../services/User/user-chat.service';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Route, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { User, Channel, StreamChat } from 'stream-chat';
 import { ChatClientService, ChannelService, StreamAutocompleteTextareaModule, StreamChatModule, StreamI18nService } from 'stream-chat-angular';
@@ -43,15 +43,20 @@ export class UserChatComponent implements OnInit {
   onlineStatus: string = 'Offline';
   apiKey = 'st3gknapp8zn';
   client = StreamChat.getInstance(this.apiKey);
+  selectedUserId: string = '';
 
   constructor(
     private chatService: ChatClientService,
     private channelService: ChannelService,
-    private streamI18nService: StreamI18nService
+    private streamI18nService: StreamI18nService,
+    private route: ActivatedRoute
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.loadCurrentUser();
+    this.route.paramMap.subscribe((params) => {
+      this.selectedUserId = params.get('userId') || '';
+    });
   }
 
   // Fetch the current user from the API and store it
@@ -67,7 +72,7 @@ export class UserChatComponent implements OnInit {
         }
 
         console.log('Current user:', this.currentUser);
-
+        
         this.loadAvailableUsers();
       },
       error: (err) => console.error('Error fetching current user:', err),
@@ -128,6 +133,12 @@ export class UserChatComponent implements OnInit {
 
       console.error('Error initializing chat:', error);
     }
+
+    
+    if (this.selectedUserId) {
+      this.startChat(this.selectedUserId);
+    }
+    
   }
   // chatgpt
   private decodeToken(token: string): any {
@@ -148,6 +159,7 @@ export class UserChatComponent implements OnInit {
       return;
     }
 
+    console.log("user id: " + otherUserId);
     const otherUser = this.availableUsers.find((user) => user.userId === otherUserId);
     if (!otherUser) {
       console.error('Selected user not found.');
@@ -181,7 +193,7 @@ export class UserChatComponent implements OnInit {
   async ensureUserExists(userExist: UserChatDTO) {
     try {
       // Check if the user exists
-      const user = await this.client.queryUsers({ id: userExist.userId});
+      const user = await this.client.queryUsers({ id: userExist.userId });
       if (user.users.length === 0) {
         console.log(`User ${userExist.userId} not found. Creating...`);
 

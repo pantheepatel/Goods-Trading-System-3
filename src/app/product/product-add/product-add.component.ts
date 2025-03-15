@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GujaratCity } from '../../core/enums/cities.enum';
@@ -49,7 +49,7 @@ export class ProductAddComponent implements OnInit {
   cloudName = 'dwoj1o26l';  // Replace with your Cloudinary cloud name
   uploadPreset = 'Goods_Trading_System'; // Replace with your Cloudinary upload preset
 
-  constructor(private route: ActivatedRoute, private productService: ProductService) {
+  constructor(private route: ActivatedRoute, private productService: ProductService, private router: Router) {
     const currentDate = new Date();
     this.maxDate = currentDate.toISOString().split('T')[0]; // Today's date
   }
@@ -273,6 +273,7 @@ export class ProductAddComponent implements OnInit {
         break;
     }
 
+    this.router.navigate(['/dashboard']);
     console.log('Form submitted successfully!', {
       category: this.category,
       model: this.model,

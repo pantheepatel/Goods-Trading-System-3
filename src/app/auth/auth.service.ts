@@ -66,11 +66,7 @@ export class AuthService {
 
   // Resend OTP API (also starts new timer)
   resendOTP(email: string,token:string): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      // Authorization: `Bearer ${token}`, // Ensure you pass a valid JWT token
-    });
-    return this.http.post<any>(`${this.baseUrl}getOTP`, JSON.stringify(email), {headers,withCredentials:true});
+    return this.http.get<any>(`${this.baseUrl}getOTP/${email}`);
   }
 }
 

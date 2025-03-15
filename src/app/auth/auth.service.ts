@@ -64,10 +64,12 @@ export class AuthService {
     return this.http.post<any>(`${this.baseUrl}verifyOTP`, payload, {headers,withCredentials:true});
   }
 
-  // Resend OTP API (also starts new timer)
-  resendOTP(email: string,token:string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}getOTP/${email},{withCredentials:true}`);
+  resendOTP(email: string, token: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}getOTP/${email}`, {
+      withCredentials: true,  // Correct placement of options
+    });
   }
+  
 }
 
   // api/auth/logout - POST - Logout -- no api

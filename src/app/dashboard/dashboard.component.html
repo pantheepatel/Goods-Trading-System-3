@@ -1,6 +1,6 @@
 <div class="p-4 flex flex-col ">
   <!-- Show this message when no products are available -->
-  <img src="Empty_basket.svg" class="h-96" alt="">
+  <img *ngIf="!products || products.length === 0" src="Empty_basket.svg" class="h-96" alt="">
   <p *ngIf="!products || products.length === 0" class="text-center text-gray-500 text-3xl">
     No products available 
   </p>

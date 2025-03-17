@@ -10,7 +10,7 @@ import { UserChatComponent } from './user-chat/user-chat.component';
 import { ProductViewComponent } from './product/product-view/product-view.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'user/chat', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/register', component: RegisterComponent },
   { path: 'auth/verify-email', component: VerifyEmailComponent },
@@ -20,7 +20,7 @@ export const routes: Routes = [
   { path: 'product/view/:productId', component: ProductViewComponent },
   { path: 'chat/:userId', component: UserChatComponent },
   // { path: 'auth/**', redirectTo: 'auth/login' }, // Redirect unknown route of auth to login
-  { path: '**', redirectTo: 'user/chat' } // Redirect unknown routes, or can show 404 page
+  { path: '**', redirectTo: 'dashboard' } // Redirect unknown routes, or can show 404 page
 ];
 
 // Provide routing in main.ts

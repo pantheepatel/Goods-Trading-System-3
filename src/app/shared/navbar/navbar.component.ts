@@ -45,6 +45,15 @@ export class NavbarComponent {
     this.router.navigate(['/product/view']);
   }
 
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('token_expiration'); // Ensure correct key name
+    localStorage.removeItem('credentials');
+  
+    console.log('User logged out. Redirecting to login page...');
+    this.router.navigate(['/auth/login']); // Redirect to login page after logout
+  }
+
   closeModal() {
     this.isModalOpen = false;
   }

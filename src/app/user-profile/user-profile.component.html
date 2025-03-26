@@ -1,1 +1,65 @@
-<p>user-profile works!</p>
+<div class="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+    <!-- User Details -->
+    <div class="flex items-center justify-between border-b pb-4 mb-4">
+      <div>
+        <h2 class="text-2xl font-semibold">{{ userProfile.fullName }}</h2>
+        <p class="text-gray-600">{{ userProfile.email }}</p>
+        <p class="text-gray-600">City: {{ userProfile.city }}</p>
+        <p class="text-gray-600">Joined: {{ userProfile.registrationDate | date: 'mediumDate' }}</p>
+      </div>
+      <span
+        [ngClass]="userProfile.isVerified ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+        class="px-3 py-1 rounded-full text-sm font-semibold"
+      >
+        {{ userProfile.isVerified ? 'Verified' : 'Not Verified' }}
+      </span>
+    </div>
+  
+    <!-- Verify User Button -->
+    <div *ngIf="!userProfile.isVerified" class="mb-4">
+      <button [routerLink]="['/auth/verify-email']"  class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+        Verify User
+      </button>
+    </div>
+  
+    <!-- Selling Products -->
+    <div class="mb-6">
+      <h3 class="text-lg font-semibold mb-2">Selling Products</h3>
+      <div *ngIf="userProfile.sellingProducts.length > 0; else noSellingProducts">
+        <div *ngFor="let product of sellingProductsToShow()" class="p-4 border rounded-lg mb-2">
+          <h4 class="font-semibold">{{ product.title }}</h4>
+          <p class="text-gray-600">{{ product.description }}</p>
+          <p class="text-sm text-gray-500">City: {{ product.city }}</p>
+          <p class="text-sm font-semibold text-green-600">Price: ₹{{ product.price }}</p>
+        </div>
+        <button *ngIf="userProfile.sellingProducts.length > 5" (click)="toggleSellingView()"
+          class="mt-2 text-blue-500 hover:underline">
+          {{ showAllSelling ? 'View Less' : 'View More' }}
+        </button>
+      </div>
+      <ng-template #noSellingProducts>
+        <p class="text-gray-500">No selling products available.</p>
+      </ng-template>
+    </div>
+  
+    <!-- Favorite Products -->
+    <div>
+      <h3 class="text-lg font-semibold mb-2">Favorite Products</h3>
+      <div *ngIf="userProfile.favouriteProducts.length > 0; else noFavorites">
+        <div *ngFor="let product of favouriteProductsToShow()" class="p-4 border rounded-lg mb-2">
+          <h4 class="font-semibold">{{ product.title }}</h4>
+          <p class="text-gray-600">{{ product.description }}</p>
+          <p class="text-sm text-gray-500">City: {{ product.city }}</p>
+          <p class="text-sm font-semibold text-green-600">Price: ₹{{ product.price }}</p>
+        </div>
+        <button *ngIf="userProfile.favouriteProducts.length > 5" (click)="toggleFavouritesView()"
+          class="mt-2 text-blue-500 hover:underline">
+          {{ showAllFavourites ? 'View Less' : 'View More' }}
+        </button>
+      </div>
+      <ng-template #noFavorites>
+        <p class="text-gray-500">No favorite products added yet.</p>
+      </ng-template>
+    </div>
+  </div>
+  

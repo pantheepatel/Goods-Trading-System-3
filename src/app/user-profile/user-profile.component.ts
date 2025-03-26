@@ -1,11 +1,71 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { UserProfileService } from './user-profile.service';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-user-profile',
-  imports: [],
   templateUrl: './user-profile.component.html',
-  styleUrl: './user-profile.component.css'
-})
-export class UserProfileComponent {
+  styleUrls: ['./user-profile.component.css'],
+  standalone: true,
+  imports: [CommonModule,RouterModule]
 
+})
+export class UserProfileComponent implements OnInit {
+  userProfile: any = null;
+  showAllSelling = false;
+  showAllFavourites = false;
+
+  constructor(private userProfileService: UserProfileService) {}
+
+  ngOnInit(): void {
+    this.loadUserProfile();
+  }
+
+  loadUserProfile() {
+    const credentials = localStorage.getItem('credentials');
+
+    // Parse the JSON and extract the email
+    const email = credentials ? JSON.parse(credentials).email : '';
+    console.log(email);
+    if (!email) {
+      console.log("Email Not Found");;
+      return;
+    }
+    this.userProfileService.getUserProfile(email).subscribe({
+      next: (data) => {
+        if (data) {
+          this.userProfile = data;
+          console.log('User Profile:', this.userProfile);
+        }
+      },
+      error: (err) => console.error('Error fetching profile:', err)
+    });
+  }
+
+ 
+
+  sellingProductsToShow() {
+    return this.userProfile?.sellingProducts 
+      ? this.showAllSelling 
+        ? this.userProfile.sellingProducts 
+        : this.userProfile.sellingProducts.slice(0, 5)
+      : [];
+  }
+
+  toggleSellingView() {
+    this.showAllSelling = !this.showAllSelling;
+  }
+
+  favouriteProductsToShow() {
+    return this.userProfile?.favouriteProducts 
+      ? this.showAllFavourites 
+        ? this.userProfile.favouriteProducts 
+        : this.userProfile.favouriteProducts.slice(0, 5)
+      : [];
+  }
+
+  toggleFavouritesView() {
+    this.showAllFavourites = !this.showAllFavourites;
+  }
 }

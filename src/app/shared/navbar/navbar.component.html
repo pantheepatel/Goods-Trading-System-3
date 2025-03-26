@@ -2,7 +2,7 @@
 <nav class="bg-white shadow-md p-4 flex justify-between items-center">
   <!-- Left Section: Logo & Search -->
   <div class="flex items-center gap-4">
-    <a routerLink="/" class="text-xl font-semibold text-blue-600">Goods Trading</a>
+    <a routerLink="/dashboard" class="text-xl font-semibold text-blue-600">Goods Trading</a>
 
     <!-- Category Filter -->
     <select class="border rounded-lg p-2 text-gray-700" >
@@ -50,7 +50,9 @@
           <li><a routerLink="/favourites" class="block px-4 py-2 hover:bg-gray-100">Favourites</a></li>
           <li><a routerLink="/my-ads" class="block px-4 py-2 hover:bg-gray-100">My Ads</a></li>
           <li class="border-t">
-            <button class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">Logout</button>
+            <button (click)="logout()" class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">
+              Logout
+            </button>
           </li>
         </ul>
       </div>

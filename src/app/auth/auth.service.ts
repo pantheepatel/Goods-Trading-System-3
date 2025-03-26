@@ -66,13 +66,11 @@ export class AuthService {
 
   // Resend OTP API (also starts new timer)
   resendOTP(email: string,token:string): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}getOTP/${email},{withCredentials:true}`);
+    return this.http.get<any>(`${this.baseUrl}getOTP/${email}`,{withCredentials:true});
   }
 }
 
-  // api/auth/logout - POST - Logout -- no api
-  // api/auth/verify-email - POST - Verify email via OTP
-  // api/auth/resend-verfication-email - POST - Resend verification email
+ 
   // api/user/profile - GET - Retrieve user profile
 
   

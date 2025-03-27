@@ -5,11 +5,9 @@
     <a routerLink="/dashboard" class="text-xl font-semibold text-blue-600">Goods Trading</a>
 
     <!-- Category Filter -->
-    <select class="border rounded-lg p-2 text-gray-700" >
+    <select class="border rounded-lg p-2 text-gray-700" (change)="onCitySelect($event)">
       <option value="">All Cities</option>
-      <option *ngFor="let city of cities" [value]="city">
-        {{ city }}
-      </option>
+      <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
     </select>
 
     <!-- Search Bar -->
@@ -65,6 +63,9 @@
   <div class="container mx-auto py-3 overflow-x-auto whitespace-nowrap">
     <div class="flex items-center justify-center space-x-4 md:space-x-6">
       <span *ngFor="let category of categories"
+        (click)="onCategorySelect(category)"
+        [class.bg-blue-500]="selectedCategory === category"
+        [class.text-white]="selectedCategory === category"
         class="cursor-pointer px-4 py-2 text-gray-700 bg-white rounded-lg shadow hover:bg-blue-500 hover:text-white transition">
         {{ category }}
       </span>

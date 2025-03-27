@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ProductService } from '../services/product/product.service';
 import { GetProductDTO } from '../core/models/product.model';
 import { Router } from '@angular/router';
+import { FilterService } from '../services/filter.service'; // ✅ Import FilterService
 
 @Component({
   selector: 'app-dashboard',
@@ -13,11 +14,27 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent implements OnInit {
   products: (GetProductDTO & { relativeDate: string })[] = [];
+  filteredProducts: (GetProductDTO & { relativeDate: string })[] = [];
 
-  constructor(private productService: ProductService, private router: Router) { }
+  selectedCategory: string | null = null;
+  selectedCity: string | null = null;
+
+  constructor(private productService: ProductService, private router: Router, private filterService: FilterService) {}
 
   ngOnInit(): void {
     this.fetchProducts();
+
+    // ✅ Listen for category changes
+    this.filterService.categoryFilter$.subscribe(category => {
+      this.selectedCategory = category;
+      this.applyFilters();
+    });
+
+    // ✅ Listen for city changes
+    this.filterService.cityFilter$.subscribe(city => {
+      this.selectedCity = city;
+      this.applyFilters();
+    });
   }
 
   fetchProducts(): void {
@@ -34,10 +51,11 @@ export class DashboardComponent implements OnInit {
         next: (response) => {
           this.products = response.map(product => ({
             ...product,
-            relativeDate: this.getRelativeTime(new Date(product.postedDate)) // ✅ Compute relative date
+            relativeDate: this.getRelativeTime(new Date(product.postedDate))
           })) || [];
-
-          console.log("Products fetched successfully:", this.products);
+          console.log(this.products);
+          this.filteredProducts = [...this.products]; // Initialize with all products
+          this.applyFilters();
         },
         error: (error) => {
           console.error("Error fetching products:", error);
@@ -48,6 +66,13 @@ export class DashboardComponent implements OnInit {
     } catch (error) {
       console.error("Error parsing local storage credentials:", error);
     }
+  }
+
+  applyFilters() {
+    this.filteredProducts = this.products.filter(product => {
+      return (!this.selectedCategory || product.categoryName === this.selectedCategory) &&
+             (!this.selectedCity || product.city === this.selectedCity);
+    });
   }
 
   getRelativeTime(postedDate: Date): string {
@@ -64,9 +89,9 @@ export class DashboardComponent implements OnInit {
   }
 
   viewProduct(productId: string): void {
-    if(localStorage.getItem('isEmailVerified')==='true'){
+    if (localStorage.getItem('isEmailVerified') === 'true') {
       this.router.navigate(['/product/view', productId]);
-    }else{
+    } else {
       alert("Please verify email to view products.");
     }
   }

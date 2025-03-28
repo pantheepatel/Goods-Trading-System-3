@@ -5,24 +5,30 @@
     <a routerLink="/dashboard" class="text-xl font-semibold text-blue-600">Goods Trading</a>
 
     <!-- Category Filter -->
-    <select class="border rounded-lg p-2 text-gray-700" (change)="onCitySelect($event)">
+    <select *ngIf="isDashboardPage" class="border rounded-lg p-2 text-gray-700" (change)="onCitySelect($event)">
       <option value="">All Cities</option>
       <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
     </select>
 
+    <select *ngIf="isDashboardPage" class="border rounded-lg p-2 text-gray-700" (change)="onPriceSortSelect($event)">
+      <option value="">Sort by Price</option>
+      <option value="asc">Low to High</option>
+      <option value="desc">High to Low</option>
+    </select>
+
     <!-- Search Bar -->
-    <input type="text" placeholder="Search..."
+    <input type="text" placeholder="Search..." *ngIf="isDashboardPage"
       class="border rounded-lg px-4 py-2 w-72 focus:ring focus:ring-blue-300" />
   </div>
 
   <!-- Right Section: Profile Menu & Sell Button -->
   <div class="flex items-center space-x-4">
     <!-- Sell Product Button (Opens Modal) -->
-
-    <button (click)="OpenChat()"
-    class="px-5 py-2 rounded-lg font-medium text-white bg-blue-500 hover:bg-blue-600 transition">
-    Chat
-  </button>
+    <a routerLink="/user/chat"><button (click)="OpenChat()"
+      class="px-5 py-2 rounded-lg font-medium text-white bg-blue-500 hover:bg-blue-600 transition">
+      Chat
+    </button></a>
+    
 
 
     <button (click)="openModal()"
@@ -59,7 +65,7 @@
 </nav>
 
 <!-- 🟢 Improved Subnavbar (Categories) -->
-<div class="bg-gray-100 shadow-inner">
+<div *ngIf="isDashboardPage" class="bg-gray-100 shadow-inner">
   <div class="container mx-auto py-3 overflow-x-auto whitespace-nowrap">
     <div class="flex items-center justify-center space-x-4 md:space-x-6">
       <span *ngFor="let category of categories"
@@ -72,6 +78,5 @@
     </div>
   </div>
 </div>
-
 <!-- 🟢 Sell Product Modal (Appears on Click) -->
 <app-sell-modal *ngIf="isModalOpen" (closeModal)="closeModal()"></app-sell-modal>

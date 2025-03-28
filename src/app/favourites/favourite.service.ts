@@ -19,7 +19,7 @@ export class FavouriteService {
     return this.http.post(`${this.baseUrl}add?email=${email}&productId=${productId}`, {});
   }
   removeFavourite(email: string, productId: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}remove?email=${email}&productId=${productId}`, {});
+    return this.http.post(`${this.baseUrl}remove?email=${email}&productId=${productId}`, {},{ responseType: 'json' });
   }
   
 }

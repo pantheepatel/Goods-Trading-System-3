@@ -39,6 +39,7 @@ export class GetProductDTO {
         public postedDate : Date,
         public categoryName : string,
         public image: string,
+        public isFavorite?: boolean
     ){}
 }
 

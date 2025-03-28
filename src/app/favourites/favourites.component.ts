@@ -10,9 +10,9 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./favourites.component.css']
 })
 export class FavouritesComponent implements OnInit {
-  favourites: any[] = []; 
+  favourites: any[] = [];
 
-  constructor(private favouriteService: FavouriteService,  private cdr: ChangeDetectorRef) { }
+  constructor(private favouriteService: FavouriteService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.loadFavouriteAds();
@@ -29,41 +29,50 @@ export class FavouritesComponent implements OnInit {
 
     this.favouriteService.getFavouriteAds(email).subscribe({
       next: (data) => {
-        this.favourites = data; 
+        this.favourites = data;
         console.log('Favourite Ads:', this.favourites);
       },
       error: (err) => console.error('Error fetching favourites:', err)
     });
   }
 
+
+
   unfavouriteProduct(product: any): void {
     const credentials = localStorage.getItem('credentials');
     const email = credentials ? JSON.parse(credentials).email : '';
-  
-    console.log('Removing product:', product);
-    console.log('Extracted Product ID:', product?.productId); // Safe check
-  
+    window.location.reload();
+
     if (!email) {
       console.log("Email Not Found");
       return;
     }
-  
+
     if (!product?.productId) {
       console.log("Product ID Not Found");
       return;
     }
-  
+
     this.favouriteService.removeFavourite(email, product.productId).subscribe({
-      next: () => {
-        console.log(`Product ${product.title} removed from favourites`);
-        this.favourites = this.favourites.filter(p => p.productId !== product.productId);
+      next: (response) => {
+        console.log("API Response:", response);
+
+        if (response.success) { 
+          console.log(`Product ${product.title} removed from favourites`);
+          this.favourites = this.favourites.filter(p => p.productId !== product.productId);
+        } else {
+          console.warn("Failed to remove favourite:", response.message);
+        }
       },
       error: (error) => {
         console.error("Error removing favourite:", error);
       }
     });
   }
-  
+
+
+
+
   getRelativeTime(postedDate: string): string {
     const currentDate = new Date();
     const posted = new Date(postedDate);

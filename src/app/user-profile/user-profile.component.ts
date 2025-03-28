@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { UserProfileService } from './user-profile.service';
 import { Router, RouterModule } from '@angular/router';
 
+
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -14,7 +15,6 @@ import { Router, RouterModule } from '@angular/router';
 export class UserProfileComponent implements OnInit {
   userProfile: any = null;
   showAllSelling = false;
-  showAllFavourites = false;
 
   constructor(private userProfileService: UserProfileService) {}
 
@@ -43,7 +43,6 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
- 
 
   sellingProductsToShow() {
     return this.userProfile?.sellingProducts 
@@ -57,15 +56,5 @@ export class UserProfileComponent implements OnInit {
     this.showAllSelling = !this.showAllSelling;
   }
 
-  favouriteProductsToShow() {
-    return this.userProfile?.favouriteProducts 
-      ? this.showAllFavourites 
-        ? this.userProfile.favouriteProducts 
-        : this.userProfile.favouriteProducts.slice(0, 5)
-      : [];
-  }
 
-  toggleFavouritesView() {
-    this.showAllFavourites = !this.showAllFavourites;
-  }
 }

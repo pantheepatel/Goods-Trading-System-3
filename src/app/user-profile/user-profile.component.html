@@ -41,25 +41,7 @@
         <p class="text-gray-500">No selling products available.</p>
       </ng-template>
     </div>
-  
-    <!-- Favorite Products -->
-    <div>
-      <h3 class="text-lg font-semibold mb-2">Favorite Products</h3>
-      <div *ngIf="userProfile.favouriteProducts.length > 0; else noFavorites">
-        <div *ngFor="let product of favouriteProductsToShow()" class="p-4 border rounded-lg mb-2">
-          <h4 class="font-semibold">{{ product.title }}</h4>
-          <p class="text-gray-600">{{ product.description }}</p>
-          <p class="text-sm text-gray-500">City: {{ product.city }}</p>
-          <p class="text-sm font-semibold text-green-600">Price: ₹{{ product.price }}</p>
-        </div>
-        <button *ngIf="userProfile.favouriteProducts.length > 5" (click)="toggleFavouritesView()"
-          class="mt-2 text-blue-500 hover:underline">
-          {{ showAllFavourites ? 'View Less' : 'View More' }}
-        </button>
-      </div>
-      <ng-template #noFavorites>
-        <p class="text-gray-500">No favorite products added yet.</p>
-      </ng-template>
-    </div>
+                
+   
   </div>
   

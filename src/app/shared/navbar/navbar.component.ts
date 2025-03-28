@@ -23,6 +23,9 @@ export class NavbarComponent {
   isModalOpen = false;
   selectedCategory: string | null = null;
   constructor(private router: Router, private filterService: FilterService) {}
+  get isDashboardPage(): boolean {
+    return this.router.url === '/dashboard';
+  }
 
   ngOnInit() {
     this.isEmailVerified = localStorage.getItem('isEmailVerified') === 'true';
@@ -70,5 +73,9 @@ export class NavbarComponent {
   onCitySelect(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.filterService.setCity(target.value);
+  }
+  onPriceSortSelect(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.filterService.setPriceSort(target.value as 'asc' | 'desc');
   }
 }

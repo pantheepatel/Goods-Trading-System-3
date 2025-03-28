@@ -1,7 +1,8 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
   <div *ngFor="let product of filteredProducts" 
-       class="bg-white shadow-lg rounded-xl overflow-hidden relative">
-    
+     class="bg-white shadow-lg rounded-xl overflow-hidden relative cursor-pointer"
+     (click)="viewProduct(product.productId)">
+
     <!-- Product Image -->
     <img [src]="product.image ? product.image : 'assets/no-image.png'" 
          alt="Product Image" class="w-full h-48 object-cover">
@@ -16,12 +17,12 @@
       <div class="flex justify-between mt-4">
         <span class="text-sm px-3 py-1 bg-gray-200 rounded-lg">{{ product.categoryName }}</span>
         
-        <!-- Heart Favorite Button -->
-        <button (click)="toggleFavourite(product)" class="focus:outline-none">
+        <!-- Heart Favorite Button (Prevent click event from propagating) -->
+        <button (click)="toggleFavourite(product); $event.stopPropagation()" class="focus:outline-none">
           <i [class]="product.isFavorite ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-400'"></i>
         </button>
-
       </div>
     </div>
-  </div>
+</div>
+
 </div>

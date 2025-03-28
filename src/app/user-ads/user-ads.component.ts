@@ -19,15 +19,23 @@ export class UserAdsComponent implements OnInit {
   }
 
   loadUserAds() {
-    const email = 'hgandhi1810@gmail.com'; // Replace with dynamic email
-    this.userAdsService.getUserAds(email).subscribe({
-      next: (ads) => {
-        this.userAds = ads;
-        console.log('User Ads:', ads);
-      },
-      error: (err) => console.error('Error fetching ads:', err)
-    });
+    // Retrieve user credentials from local storage
+    const userCredentials = localStorage.getItem('credentials');
+    
+    if (userCredentials) {
+      const { email } = JSON.parse(userCredentials); // Extract email
+      this.userAdsService.getUserAds(email).subscribe({
+        next: (ads) => {
+          this.userAds = ads;
+          console.log('User Ads:', ads);
+        },
+        error: (err) => console.error('Error fetching ads:', err)
+      });
+    } else {
+      console.error('No user credentials found in local storage.');
+    }
   }
+  
 
    markAsSold(productId: string) {
     this.userAdsService.updateAdStatus(productId, 'Soldut').subscribe({

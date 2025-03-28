@@ -2,29 +2,33 @@
 <nav class="bg-white shadow-md p-4 flex justify-between items-center">
   <!-- Left Section: Logo & Search -->
   <div class="flex items-center gap-4">
-    <a routerLink="/" class="text-xl font-semibold text-blue-600">Goods Trading</a>
+    <a routerLink="/dashboard" class="text-xl font-semibold text-blue-600">Goods Trading</a>
 
     <!-- Category Filter -->
-    <select class="border rounded-lg p-2 text-gray-700" >
+    <select *ngIf="isDashboardPage" class="border rounded-lg p-2 text-gray-700" (change)="onCitySelect($event)">
       <option value="">All Cities</option>
-      <option *ngFor="let city of cities" [value]="city">
-        {{ city }}
-      </option>
+      <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+    </select>
+
+    <select *ngIf="isDashboardPage" class="border rounded-lg p-2 text-gray-700" (change)="onPriceSortSelect($event)">
+      <option value="">Sort by Price</option>
+      <option value="asc">Low to High</option>
+      <option value="desc">High to Low</option>
     </select>
 
     <!-- Search Bar -->
-    <input type="text" placeholder="Search..."
+    <input type="text" placeholder="Search..." *ngIf="isDashboardPage"
       class="border rounded-lg px-4 py-2 w-72 focus:ring focus:ring-blue-300" />
   </div>
 
   <!-- Right Section: Profile Menu & Sell Button -->
   <div class="flex items-center space-x-4">
     <!-- Sell Product Button (Opens Modal) -->
-
-    <button (click)="OpenChat()"
-    class="px-5 py-2 rounded-lg font-medium text-white bg-blue-500 hover:bg-blue-600 transition">
-    Chat
-  </button>
+    <a routerLink="/user/chat"><button (click)="OpenChat()"
+      class="px-5 py-2 rounded-lg font-medium text-white bg-blue-500 hover:bg-blue-600 transition">
+      Chat
+    </button></a>
+    
 
 
     <button (click)="openModal()"
@@ -50,7 +54,9 @@
           <li><a routerLink="/favourites" class="block px-4 py-2 hover:bg-gray-100">Favourites</a></li>
           <li><a routerLink="/my-ads" class="block px-4 py-2 hover:bg-gray-100">My Ads</a></li>
           <li class="border-t">
-            <button class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">Logout</button>
+            <button (click)="logout()" class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">
+              Logout
+            </button>
           </li>
         </ul>
       </div>
@@ -59,16 +65,18 @@
 </nav>
 
 <!-- 🟢 Improved Subnavbar (Categories) -->
-<div class="bg-gray-100 shadow-inner">
+<div *ngIf="isDashboardPage" class="bg-gray-100 shadow-inner">
   <div class="container mx-auto py-3 overflow-x-auto whitespace-nowrap">
     <div class="flex items-center justify-center space-x-4 md:space-x-6">
       <span *ngFor="let category of categories"
+        (click)="onCategorySelect(category)"
+        [class.bg-blue-500]="selectedCategory === category"
+        [class.text-white]="selectedCategory === category"
         class="cursor-pointer px-4 py-2 text-gray-700 bg-white rounded-lg shadow hover:bg-blue-500 hover:text-white transition">
         {{ category }}
       </span>
     </div>
   </div>
 </div>
-
 <!-- 🟢 Sell Product Modal (Appears on Click) -->
 <app-sell-modal *ngIf="isModalOpen" (closeModal)="closeModal()"></app-sell-modal>

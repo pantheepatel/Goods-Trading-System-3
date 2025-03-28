@@ -19,6 +19,9 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'Goods-Trading-System';
   products: any[] = [];
   showNavbarAndFooter = true;
+  isDashboardPage(): boolean {
+    return this.router.url === '/dashboard'; 
+  }
   private routerSubscription!: Subscription;
 
   constructor(private router: Router) {}

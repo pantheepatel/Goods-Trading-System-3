@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductCategory } from '../../core/enums/category.enum';
 import { SellModalComponent } from '../../product/sell-modal/sell-modal.component';
-import { Product } from '../../core/models/product.model';
 import { GujaratCity } from '../../core/enums/cities.enum';
 import { Router } from '@angular/router';
+import { FilterService } from '../../services/filter.service'; // ✅ Import FilterService
 
 @Component({
   selector: 'app-navbar',
@@ -19,33 +19,63 @@ export class NavbarComponent {
   categories = Object.values(ProductCategory);
   cities = Object.values(GujaratCity);
   isEmailVerified: boolean = false;
-  credentials = localStorage.getItem('credentials');
-  email = "User"
-  constructor(private router: Router) {} 
+  email: string = "User";
+  isModalOpen = false;
+  selectedCategory: string | null = null;
+  constructor(private router: Router, private filterService: FilterService) {}
+  get isDashboardPage(): boolean {
+    return this.router.url === '/dashboard';
+  }
+
   ngOnInit() {
     this.isEmailVerified = localStorage.getItem('isEmailVerified') === 'true';
-    if (this.credentials) {
-      const parsedCredentials = JSON.parse(this.credentials); // Convert string to object
-      this.email = parsedCredentials.email; // Extract email
-    } else {
-      this.email = ''; // Handle case when credentials are not found
+    const credentials = localStorage.getItem('credentials');
+    
+    if (credentials) {
+      try {
+        const parsedCredentials = JSON.parse(credentials);
+        this.email = parsedCredentials?.email || '';
+      } catch (error) {
+        console.error("Error parsing credentials:", error);
+        this.email = '';
+      }
     }
   }
 
   toggleProfileMenu() {
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
   }
-  isModalOpen = false;
 
   openModal() {
     this.isModalOpen = true;
   }
 
-  OpenChat(){
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
+  OpenChat() {
     this.router.navigate(['/product/view']);
   }
 
-  closeModal() {
-    this.isModalOpen = false;
+  logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('token_expiration'); 
+    localStorage.removeItem('credentials');
+    console.log('User logged out. Redirecting to login page...');
+    this.router.navigate(['/auth/login']);
+  }
+
+  onCategorySelect(category: string) {
+    this.filterService.setCategory(category);
+  }
+
+  onCitySelect(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.filterService.setCity(target.value);
+  }
+  onPriceSortSelect(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.filterService.setPriceSort(target.value as 'asc' | 'desc');
   }
 }

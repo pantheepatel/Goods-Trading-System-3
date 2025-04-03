@@ -6,11 +6,12 @@ import { SellModalComponent } from '../../product/sell-modal/sell-modal.componen
 import { GujaratCity } from '../../core/enums/cities.enum';
 import { Router } from '@angular/router';
 import { FilterService } from '../../services/filter.service'; // ✅ Import FilterService
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, SellModalComponent],
+  imports: [CommonModule, RouterLink, SellModalComponent, FormsModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
@@ -41,7 +42,12 @@ export class NavbarComponent {
       }
     }
   }
+  searchQuery: string = '';
 
+  onSearch() {
+    console.log('Search Clicked! Query:', this.searchQuery);
+    this.filterService.setSearchQuery(this.searchQuery);  // ✅ Update search query in service
+  }
   toggleProfileMenu() {
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
   }

@@ -20,13 +20,15 @@ export class DashboardComponent implements OnInit {
   selectedCity: string | null = null;
   selectedPriceSort: 'asc' | 'desc' | null = null;
   isDashboardPage: boolean = true;
+  searchQuery: string = '';
+  email: string = '';
   constructor(
     private productService: ProductService,
     private router: Router,
     private filterService: FilterService,
-    private favouriteService: FavouriteService, 
+    private favouriteService: FavouriteService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.fetchProducts();
@@ -45,6 +47,47 @@ export class DashboardComponent implements OnInit {
       this.selectedPriceSort = order;
       this.applyFilters();
     });
+    this.filterService.searchQuery$.subscribe(query => {
+      this.searchQuery = query ?? '';
+      this.fetchSearchResults(query);
+    });
+  }
+
+  fetchSearchResults(query: string | null) {
+    const credentials = localStorage.getItem('credentials');
+    const email = credentials ? JSON.parse(credentials).email : '';
+  
+    if (!email) {
+      console.log("Email Not Found");
+      return;
+    }
+  
+    const searchQuery = query ?? ''; // 🔹 Ensure 'query' is always a string
+  
+    if (!searchQuery.trim()) { // If query is empty, load all products
+      this.fetchProducts();
+      return;
+    }
+  
+    this.productService.searchProducts(email, searchQuery).subscribe({
+      next: (results) => {
+        console.log('Search Results:', results);
+        this.filteredProducts = results.map(product => ({
+          ...product,
+          relativeDate: this.getRelativeTime(new Date(product.postedDate)),
+          isFavorite: product.isFavorite ?? false 
+        }));
+      },
+      error: (error) => {
+        console.error("Error fetching search results:", error);
+        this.filteredProducts = [];
+      }
+    });
+  }
+  
+
+  onSearch() {
+    this.filterService.setSearchQuery(this.searchQuery);
   }
 
   fetchProducts(): void {
@@ -61,7 +104,7 @@ export class DashboardComponent implements OnInit {
         this.products = response.map(product => ({
           ...product,
           relativeDate: this.getRelativeTime(new Date(product.postedDate)),
-          isFavorite: product.isFavorite ?? false 
+          isFavorite: product.isFavorite ?? false
         })) || [];
 
         this.filteredProducts = [...this.products]; // Keep the original order
@@ -72,12 +115,12 @@ export class DashboardComponent implements OnInit {
         this.products = [];
       }
     });
-  }  
+  }
 
   applyFilters() {
     this.filteredProducts = this.products.filter(product => {
       return (!this.selectedCategory || product.categoryName === this.selectedCategory) &&
-             (!this.selectedCity || product.city === this.selectedCity);
+        (!this.selectedCity || product.city === this.selectedCity);
     });
 
     if (this.selectedPriceSort) {
@@ -136,7 +179,7 @@ export class DashboardComponent implements OnInit {
           product.isFavorite = true;
           console.log(`Added ${product.title} to favourites`);
         },
-        error: (error) =>{
+        error: (error) => {
           console.error("Error adding favourite:", error);
         }
       });

@@ -8,7 +8,9 @@ export class FilterService {
   private categoryFilter = new BehaviorSubject<string | null>(null);
   private cityFilter = new BehaviorSubject<string | null>(null);
   private priceSort = new BehaviorSubject<'asc' | 'desc' | null>(null);
+  private searchQuery = new BehaviorSubject<string | null>(null);
 
+  searchQuery$ = this.searchQuery.asObservable();
   categoryFilter$ = this.categoryFilter.asObservable();
   cityFilter$ = this.cityFilter.asObservable();
   priceSort$ = this.priceSort.asObservable();
@@ -22,5 +24,8 @@ export class FilterService {
   }
   setPriceSort(order: 'asc' | 'desc' | null) {
     this.priceSort.next(order);
+  }
+  setSearchQuery(query: string | null) {
+    this.searchQuery.next(query ?? '');
   }
 }

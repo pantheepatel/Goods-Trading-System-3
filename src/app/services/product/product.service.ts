@@ -36,20 +36,12 @@ export class ProductService {
     return this.http.post(`${this.url}/sell/${category}`, furnitureData);
   }
 
-  // api/product/{id} - GET - Retrieve a specific product - view product details - product-view component
   getProductDetails(productId: string): Observable<any> {
     return this.http.get<any>(`${this.url}/GetProductDetails/${productId}`);
   }
 
-  // api/product - POST - Create a new product - product-add component
-
-  // FIX: check whether the uid is needed to retrive products or not - product-card component on loop in dashboard
-  // api/product/my-products - GET - Retrieve all products created by the logged in user
-  // api/product/my-products/{uid} - GET - Retrieve all products created by the logged in user
-
-
-
-  // api/product/{id} - PUT - Update a product -- phase 2
-  // api/product/{id} - DELETE - Delete a product -- phase 2
+  searchProducts(email: string, query: string): Observable<GetProductDTO[]> {
+    return this.http.get<GetProductDTO[]>(`${this.url}/search/${email}/${query}`);
+  }  
 
 }

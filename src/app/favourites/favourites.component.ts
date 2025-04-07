@@ -36,8 +36,6 @@ export class FavouritesComponent implements OnInit {
     });
   }
 
-
-
   unfavouriteProduct(product: any): void {
     const credentials = localStorage.getItem('credentials');
     const email = credentials ? JSON.parse(credentials).email : '';
@@ -69,9 +67,6 @@ export class FavouritesComponent implements OnInit {
       }
     });
   }
-
-
-
 
   getRelativeTime(postedDate: string): string {
     const currentDate = new Date();

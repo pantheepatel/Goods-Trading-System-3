@@ -1,57 +1,69 @@
 <div class="p-4 bg-white shadow rounded-lg">
-    <h2 class="text-xl font-bold mb-4">Your Ads</h2>
-  
-    <!-- Show if user has ads -->
-    <div *ngIf="userAds.length > 0; else noAds">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        
-        <div *ngFor="let ad of userAds" class="border rounded-lg p-3 shadow-lg bg-gray-50">
-          
-          <!-- Product Image -->
-          <img [src]="ad.image" alt="Product Image" class="w-full h-40 object-cover rounded-md">
-          
-          <!-- Ad Details -->
-          <h3 class="text-lg font-semibold mt-2">{{ ad.title }}</h3>
-          <p class="text-sm text-gray-500">Model: {{ ad.model }}</p>
-          <p class="text-sm text-gray-500">Category: {{ ad.categoryName }}</p>
-          
-          <!-- Status Highlight -->
-          <p 
-            class="text-sm font-bold px-2 py-1 rounded-md w-max"
-            [ngClass]="{
+  <h2 class="text-xl font-bold mb-4">Your Ads</h2>
+
+  <!-- Show if user has ads -->
+  <div *ngIf="userAds.length > 0; else noAds">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+      <div *ngFor="let ad of userAds" class="border rounded-lg p-3 shadow-lg bg-gray-50">
+
+        <!-- Product Image -->
+        <img [src]="ad.image" alt="Product Image" class="w-full h-40 object-cover rounded-md">
+
+        <!-- Ad Details -->
+        <h3 class="text-lg font-semibold mt-2">{{ ad.title }}</h3>
+        <p class="text-sm text-gray-500">Model: {{ ad.model }}</p>
+        <p class="text-sm text-gray-500">Category: {{ ad.categoryName }}</p>
+
+        <!-- Status Highlight -->
+        <p class="text-sm font-bold px-2 py-1 rounded-md w-max" [ngClass]="{
               'bg-green-200 text-green-800': ad.status === 'Available',
               'bg-red-200 text-red-800': ad.status === 'SoldOut'
             }">
-            Status: {{ ad.status }}
-          </p>
-  
-          <p class="text-sm font-bold">₹{{ ad.price }}</p>
-          <p class="text-sm text-gray-400">City: {{ ad.city }}</p>
-          <p class="text-xs text-gray-500">Posted: {{ ad.postedDate | date: 'medium' }}</p>
-  
-          <!-- Action Buttons -->
-          <div class="mt-3 space-x-2">
-            <button *ngIf="ad.status === 'Available'" 
-              (click)="markAsSold(ad.productId)" 
-              class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition">
-              Mark as Sold
-            </button>
-  
-            <button 
-              (click)="deleteAd(ad.productId)" 
-              class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
-              Delete
-            </button>
-          </div>
-  
+          Status: {{ ad.status }}
+        </p>
+
+        <p class="text-sm font-bold">₹{{ ad.price }}</p>
+        <p class="text-sm text-gray-400">City: {{ ad.city }}</p>
+        <p class="text-xs text-gray-500">Posted: {{ ad.postedDate | date: 'medium' }}</p>
+
+        <!-- Action Buttons -->
+        <div class="mt-3 space-x-2">
+          <button *ngIf="ad.status === 'Available'" (click)="markAsSold(ad.productId)"
+            class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition">
+            Mark as Sold
+          </button>
+
+          <button (click)="deleteAd(ad.productId)"
+            class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+            Delete
+          </button>
         </div>
-  
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div *ngIf="showConfirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white p-6 rounded shadow-lg w-96 relative">
+      <h2 class="text-lg font-bold mb-4">Enter Buyer Email</h2>
+
+      <input type="email" [(ngModel)]="buyerEmailInput" placeholder="Buyer Email"
+        class="w-full border p-2 rounded mb-4" />
+
+      <div class="flex justify-end gap-3">
+        <button (click)="closeModal()"
+          class="px-4 py-1 rounded bg-gray-400 text-white hover:bg-gray-500">Cancel</button>
+        <button (click)="sendConfirmationRequest()"
+          class="px-4 py-1 rounded bg-blue-600 text-white hover:bg-blue-700">Send</button>
       </div>
     </div>
-  
-    <!-- No Ads Template -->
-    <ng-template #noAds>
-      <p class="text-gray-500">No ads found.</p>
-    </ng-template>
   </div>
-  
+
+  <!-- No Ads Template -->
+  <ng-template #noAds>
+    <p class="text-gray-500">No ads found.</p>
+  </ng-template>
+</div>

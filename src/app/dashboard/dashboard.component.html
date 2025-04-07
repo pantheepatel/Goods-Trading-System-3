@@ -21,6 +21,10 @@
         <button (click)="toggleFavourite(product); $event.stopPropagation()" class="focus:outline-none">
           <i [class]="product.isFavorite ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-400'"></i>
         </button>
+
+        <button (click)="markAsInterested(product.productId, $event)" class="focus:outline-none">
+          <i class="fas fa-bell text-yellow-500"></i> <!-- Bell icon for interested -->
+        </button>
       </div>
     </div>
 </div>

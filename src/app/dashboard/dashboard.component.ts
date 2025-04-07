@@ -5,6 +5,7 @@ import { GetProductDTO } from '../core/models/product.model';
 import { Router } from '@angular/router';
 import { FilterService } from '../services/filter.service';
 import { FavouriteService } from '../favourites/favourite.service';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,7 +28,8 @@ export class DashboardComponent implements OnInit {
     private router: Router,
     private filterService: FilterService,
     private favouriteService: FavouriteService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private notificationService : NotificationService
   ) { }
 
   ngOnInit(): void {
@@ -62,9 +64,9 @@ export class DashboardComponent implements OnInit {
       return;
     }
   
-    const searchQuery = query ?? ''; // 🔹 Ensure 'query' is always a string
+    const searchQuery = query ?? ''; 
   
-    if (!searchQuery.trim()) { // If query is empty, load all products
+    if (!searchQuery.trim()) { 
       this.fetchProducts();
       return;
     }
@@ -106,7 +108,7 @@ export class DashboardComponent implements OnInit {
           relativeDate: this.getRelativeTime(new Date(product.postedDate)),
           isFavorite: product.isFavorite ?? false
         })) || [];
-
+        console.log("Product Details",this.products);
         this.filteredProducts = [...this.products]; // Keep the original order
         this.applyFilters();
       },
@@ -185,4 +187,27 @@ export class DashboardComponent implements OnInit {
       });
     }
   }
+
+  markAsInterested(productId: string, event: Event): void {
+    event.stopPropagation();
+    const credentials = localStorage.getItem('credentials');
+    const buyerEmail = credentials ? JSON.parse(credentials).email : '';
+  
+    if (!buyerEmail) {
+      console.log("Buyer email not found");
+      return;
+    }
+  
+    this.notificationService.notifySeller(productId, buyerEmail).subscribe({
+      next: () => {
+        console.log('Seller notified successfully');
+        alert("Seller has been notified of your interest.");
+        // Optionally: store in local notification state or toggle an icon
+      },
+      error: (error) => {
+        console.error("Error notifying seller:", error);
+      }
+    });
+  }
+  
 }

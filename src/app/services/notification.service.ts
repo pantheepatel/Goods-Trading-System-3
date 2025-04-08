@@ -1,4 +1,3 @@
-// src/app/services/notification.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -20,6 +19,25 @@ export class NotificationService {
       sellerEmail,
       buyerEmail,
       productId
+    });
+  }
+  getNotifications(email: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/get-requests?email=${encodeURIComponent(email)}`);
+  }
+
+  sendBuyerResponse(payload: {
+    productId: string;
+    sellerEmail: string;
+    buyerEmail: string;
+    status: string;
+  }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/buyer-response`, payload);
+  }
+  completeTransaction(productId: string, sellerEmail: string, buyerEmail: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/complete`, {
+      productId,
+      sellerEmail,
+      buyerEmail
     });
   }
 }

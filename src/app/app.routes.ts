@@ -11,6 +11,7 @@ import { ProductViewComponent } from './product/product-view/product-view.compon
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserAdsComponent } from './user-ads/user-ads.component';
 import { FavouritesComponent } from './favourites/favourites.component';
+import { NotificationsComponent } from './notifications/notifications.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -19,6 +20,7 @@ export const routes: Routes = [
   { path: 'auth/verify-email', component: VerifyEmailComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'profile', component: UserProfileComponent },
+  {path : 'notifications',component : NotificationsComponent},
   {path : 'my-ads',component:UserAdsComponent},
   {path : 'favourites',component:FavouritesComponent},
   { path: 'sell/:category', component: ProductAddComponent },

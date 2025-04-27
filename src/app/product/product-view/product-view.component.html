@@ -1,163 +1,170 @@
-<div *ngIf="product" class="max-w-3xl mx-auto bg-white shadow-lg rounded-lg p-6">
-    <!-- Product Title -->
-    <h2 class="text-3xl font-bold text-gray-800">{{ product.commonDetails.title }}</h2>
-  
-    <div id="carouselExample" class="relative w-full max-w-3xl mx-auto">
-        <!-- Carousel items -->
-        <div class="carousel-inner relative overflow-hidden w-full">
-          <!-- Loop through images dynamically -->
-          <div *ngFor="let image of product.commonDetails.images; let i = index" class="carousel-item float-left w-full"
-               [ngClass]="{'hidden': i !== currentSlide}">
-            <img [src]="image" class="block w-full h-64 object-contain" alt="Product Image">
-          </div>
-        </div>
-      
-        <!-- Carousel controls -->
-        <button class="absolute top-1/2 left-0 transform -translate-y-1/2 px-4 py-2 text-white bg-black bg-opacity-50 hover:bg-opacity-70" (click)="prevSlide()">
-          &#10094;
-        </button>
-        <button class="absolute top-1/2 right-0 transform -translate-y-1/2 px-4 py-2 text-white bg-black bg-opacity-50 hover:bg-opacity-70" (click)="nextSlide()">
-          &#10095;
-        </button>
+<div *ngIf="product" class="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl p-8 mt-6">
+  <!-- Product Title -->
+  <h2 class="text-4xl font-extrabold text-gray-800 mb-6">{{ product.commonDetails.title }}</h2>
+
+  <!-- Carousel -->
+  <div class="relative w-full mb-6">
+    <div class="relative overflow-hidden rounded-lg h-80 bg-gray-100">
+      <div *ngFor="let image of product.commonDetails.images; let i = index"
+        class="absolute inset-0 transition-opacity duration-700"
+        [ngClass]="{ 'opacity-100': i === currentSlide, 'opacity-0': i !== currentSlide }">
+        <img [src]="image" alt="Product Image" class="w-full h-full object-contain">
       </div>
-      
-      <!-- Tailwind JavaScript for carousel functionality -->
-      <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.carousel-item');
-        const totalSlides = slides.length;
-      
-        const nextBtn = document.getElementById('nextBtn');
-        const prevBtn = document.getElementById('prevBtn');
-      
-        function showSlide(index) {
-          if (index >= totalSlides) currentSlide = 0;
-          if (index < 0) currentSlide = totalSlides - 1;
-          slides.forEach((slide, i) => {
-            slide.style.display = i === currentSlide ? 'block' : 'none';
-          });
-        }
-      
-        nextBtn.addEventListener('click', () => {
-          currentSlide++;
-          showSlide(currentSlide);
-        });
-      
-        prevBtn.addEventListener('click', () => {
-          currentSlide--;
-          showSlide(currentSlide);
-        });
-      
-        // Initialize carousel
-        showSlide(currentSlide);
-      </script>
-      
-
-
-
-    <!-- Product Images -->
-    <div class="flex space-x-2 overflow-x-auto mt-4">
-      <img *ngFor="let image of product.commonDetails.images" [src]="image" alt="Product Image" 
-        class="w-32 h-32 object-cover rounded-md shadow-md">
     </div>
-  
+
+    <!-- Carousel Controls -->
+    <button (click)="prevSlide()" class="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full">
+      &#10094;
+    </button>
+    <button (click)="nextSlide()" class="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full">
+      &#10095;
+    </button>
+  </div>
+
+  <!-- Image Thumbnails -->
+  <div class="flex space-x-3 overflow-x-auto pb-2 mb-8">
+    <img *ngFor="let image of product.commonDetails.images; let i = index"
+      [src]="image"
+      (click)="currentSlide = i"
+      [class.border-blue-500]="currentSlide === i"
+      class="w-24 h-24 object-cover rounded-md shadow-md cursor-pointer border-2 hover:border-blue-400 transition">
+  </div>
+
+  <!-- Product Details -->
+  <div class="space-y-4 text-lg">
     <!-- Product Details -->
-    <div class="mt-4 space-y-2">
-      <p><span class="font-semibold">Model:</span> {{ product.commonDetails.model }}</p>
-      <p><span class="font-semibold">Price:</span> ₹{{ product.commonDetails.price }}</p>
-      <p><span class="font-semibold">City:</span> {{ product.commonDetails.city }}</p>
-      <p><span class="font-semibold">Posted On:</span> {{ product.commonDetails.postedDate }}</p>
-      <p><span class="font-semibold">Purchase Year:</span> {{ product.commonDetails.purchaseYear  }}</p>
-      <p><span class="font-semibold">Category:</span> {{ product.commonDetails.categoryName }}</p>
-      <p><span class="font-semibold">Description:</span> {{ product.commonDetails.description }}</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <!-- Price -->
+      <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
+        <i class="fas fa-dollar-sign text-green-600"></i>
+        <div>
+          <h3 class="font-semibold text-xl">Price</h3>
+          <p class="text-2xl font-extrabold text-green-600 bg-green-100 p-2 rounded-lg">
+            ₹ {{ product.commonDetails.price }}
+          </p>
+        </div>
+      </div>
+      <!-- Model -->
+      <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
+        <i class="fas fa-cogs text-blue-600"></i>
+        <div>
+          <h3 class="font-semibold text-xl">Model</h3>
+          <p>{{ product.commonDetails.model }}</p>
+        </div>
+      </div>
+      <!-- City -->
+      <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
+        <i class="fas fa-map-marker-alt text-red-600"></i>
+        <div>
+          <h3 class="font-semibold text-xl">City</h3>
+          <p>{{ product.commonDetails.city }}</p>
+        </div>
+      </div>
+      <!-- Posted Date -->
+      <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
+        <i class="fas fa-calendar-alt text-yellow-600"></i>
+        <div>
+          <h3 class="font-semibold text-xl">Posted On</h3>
+          <p>{{ getFormattedPostedOn(product.commonDetails.postedDate) }}</p>
+        </div>
+      </div>
+      <!-- Purchase Year -->
+      <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
+        <i class="fas fa-calendar-check text-purple-600"></i>
+        <div>
+          <h3 class="font-semibold text-xl">Purchase Year</h3>
+          <p>{{ getFormattedPurchaseYear(product.commonDetails.purchaseYear) }}</p>
+        </div>
+      </div>
+      <!-- Category -->
+      <div class="bg-white p-6 rounded-lg shadow-md flex items-center space-x-4">
+        <i class="fas fa-tag text-teal-600"></i>
+        <div>
+          <h3 class="font-semibold text-xl">Category</h3>
+          <p>{{ product.commonDetails.categoryName }}</p>
+        </div>
+      </div>
     </div>
   
-    <!-- Specific Details -->
-    <div *ngIf="product.commonDetails.categoryName === 'Bike'" class="mt-4">
-      <h3 class="text-xl font-semibold">Specifications</h3>
-      <ul class="list-disc pl-5">
-        <li *ngIf="product.specificDetails.brand"><span class="font-semibold">Brand:</span> {{ product.specificDetails.brand }}</li>
-        <li *ngIf="product.specificDetails.fuelType"><span class="font-semibold">Fuel Type:</span> {{ product.specificDetails.fuelType }}</li>
-        <li *ngIf="product.specificDetails.kilometersDriven"><span class="font-semibold">Kilometers Driven:</span> {{ product.specificDetails.kilometersDriven }}</li>
-        <li *ngIf="product.specificDetails.bikeType"><span class="font-semibold">Bike Type:</span> {{ product.specificDetails.bikeType }}</li>
-      </ul>
+    <!-- Description -->
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="font-semibold text-xl mb-3">Description</h3>
+      <p>{{ product.commonDetails.description }}</p>
     </div>
-    <div *ngIf="product.commonDetails.categoryName === 'Car'" class="mt-4">
-        <!-- "brand": "Toyota",
-        "fuelType": "Hybrid",
-        "transmissionType": "Automatic",
-        "kilometersDriven": 15000,
-        "ownerCount": 1 -->
-        <h3 class="text-xl font-semibold">Specifications</h3>
-        <ul class="list-disc pl-5">
-          <li *ngIf="product.specificDetails.brand"><span class="font-semibold">Brand:</span> {{ product.specificDetails.brand }}</li>
-          <li *ngIf="product.specificDetails.fuelType"><span class="font-semibold">Fuel Type:</span> {{ product.specificDetails.fuelType }}</li>
-          <li *ngIf="product.specificDetails.kilometersDriven"><span class="font-semibold">Kilometers Driven:</span> {{ product.specificDetails.kilometersDriven }}</li>
-          <li *ngIf="product.specificDetails.transmissionType"><span class="font-semibold">Transmission Type:</span> {{ product.specificDetails.transmissionType }}</li>
-          <li *ngIf="product.specificDetails.ownerCount"><span class="font-semibold">Owner Count:</span> {{ product.specificDetails.ownerCount }}</li>
-        </ul>
-      </div>
-    <div *ngIf="product.commonDetails.categoryName === 'Mobile'" class="mt-4">
-    <h3 class="text-xl font-semibold">Specifications</h3>
-    <ul class="list-disc pl-5">
-        <li *ngIf="product.specificDetails.brand"><span class="font-semibold">Brand:</span> {{ product.specificDetails.brand }}</li>
-        <li *ngIf="product.specificDetails.operatingSystem"><span class="font-semibold">Operating System:</span> {{ product.specificDetails.operatingSystem }}</li>
-        <li *ngIf="product.specificDetails.ram"><span class="font-semibold">RAM :</span> {{ product.specificDetails.ram }} GB</li>
-        <li *ngIf="product.specificDetails.storageCapacity"><span class="font-semibold">Storage Capacity:</span> {{ product.specificDetails.storageCapacity }} GB</li>
-    </ul>
-    </div>
-    <div *ngIf="product.commonDetails.categoryName === 'Electronics'" class="mt-4">
-        <h3 class="text-xl font-semibold">Specifications</h3>
-        <ul class="list-disc pl-5">
-            <li *ngIf="product.specificDetails.brand"><span class="font-semibold">Brand:</span> {{ product.specificDetails.brand }}</li>
-            <li *ngIf="product.specificDetails.electronicsType"><span class="font-semibold">Electronic Type:</span> {{ product.specificDetails.electronicsType }}</li>
-            <li *ngIf="product.specificDetails.warrantyPeriod"><span class="font-semibold">Warranty Period:</span> {{ product.specificDetails.warrantyPeriod }} Months</li>
-            <li *ngIf="product.specificDetails.storageCapacity"><span class="font-semibold">Storage Capacity:</span> {{ product.specificDetails.storageCapacity }} GB</li>
-        </ul>
-        </div>
-        <div *ngIf="product.commonDetails.categoryName === 'Furniture'" class="mt-4">
-            <h3 class="text-xl font-semibold">Specifications</h3>
-            <ul class="list-disc pl-5">
-                <li *ngIf="product.specificDetails.furnitureType"><span class="font-semibold">Furniture Type:</span> {{ product.specificDetails.furnitureType }}</li>
-            </ul>
-            </div>
+  </div>
     
-
-    <!-- Seller Information -->
-    <div class="mt-6 p-4 bg-gray-100 rounded-lg">
-      <h3 class="text-lg font-semibold">Seller Details</h3>
-      <p><span class="font-semibold">Name:</span> {{ product.sellerDetails.fullName }}</p>
-      <p><span class="font-semibold">Email:</span> {{ product.sellerDetails.email }}</p>
-      <p><span class="font-semibold">Location:</span> {{ product.sellerDetails.city }}</p>
-  
-      <button 
-        (click)="goToChat()" 
-        class="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
-        Chat with Seller
-      </button>
-    </div>
-  
-    <!-- Other Products from the Same Seller -->
-    <div *ngIf="product.otherProductsFromSameUser.length > 0" class="mt-8">
-      <h3 class="text-xl font-semibold">Other Listings by Seller</h3>
-      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-        <div *ngFor="let item of product.otherProductsFromSameUser" 
-          class="bg-white p-4 shadow-md rounded-lg">
-          <img [src]="item.image" alt="{{ item.title }}" class="w-full h-32 object-cover rounded-md">
-          <h4 class="mt-2 text-lg font-semibold">{{ item.title }}</h4>
-          <p class="text-sm text-gray-600">{{ item.category }}</p>
-          <p class="text-sm font-semibold">₹{{ item.price }}</p>
-          <button (click)="viewProduct(item.productId)" 
-            class="mt-2 bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
-            View
-          </button>
-        </div>
+  <!-- Specific Details -->
+  <div *ngIf="product.commonDetails.categoryName" class="mt-8">
+    <h3 class="text-2xl font-bold mb-4">Specifications</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div *ngIf="product.specificDetails.brand" class="bg-gray-50 p-4 rounded-xl shadow-md">
+        <span class="font-semibold">Brand:</span> {{ product.specificDetails.brand }}
+      </div>
+      <div *ngIf="product.specificDetails.fuelType" class="bg-gray-50 p-4 rounded-xl shadow-md">
+        <span class="font-semibold">Fuel Type:</span> {{ product.specificDetails.fuelType }}
+      </div>
+      <div *ngIf="product.specificDetails.kilometersDriven" class="bg-gray-50 p-4 rounded-xl shadow-md">
+        <span class="font-semibold">Kilometers Driven:</span> {{ product.specificDetails.kilometersDriven }}
+      </div>
+      <div *ngIf="product.specificDetails.transmissionType" class="bg-gray-50 p-4 rounded-xl shadow-md">
+        <span class="font-semibold">Transmission Type:</span> {{ product.specificDetails.transmissionType }}
+      </div>
+      <div *ngIf="product.specificDetails.ownerCount" class="bg-gray-50 p-4 rounded-xl shadow-md">
+        <span class="font-semibold">Owner Count:</span> {{ product.specificDetails.ownerCount }}
+      </div>
+      <div *ngIf="product.specificDetails.operatingSystem" class="bg-gray-50 p-4 rounded-xl shadow-md">
+        <span class="font-semibold">Operating System:</span> {{ product.specificDetails.operatingSystem }}
+      </div>
+      <div *ngIf="product.specificDetails.ram" class="bg-gray-50 p-4 rounded-xl shadow-md">
+        <span class="font-semibold">RAM:</span> {{ product.specificDetails.ram }} GB
+      </div>
+      <div *ngIf="product.specificDetails.storageCapacity" class="bg-gray-50 p-4 rounded-xl shadow-md">
+        <span class="font-semibold">Storage Capacity:</span> {{ product.specificDetails.storageCapacity }} GB
+      </div>
+      <div *ngIf="product.specificDetails.electronicsType" class="bg-gray-50 p-4 rounded-xl shadow-md">
+        <span class="font-semibold">Electronic Type:</span> {{ product.specificDetails.electronicsType }}
+      </div>
+      <div *ngIf="product.specificDetails.warrantyPeriod" class="bg-gray-50 p-4 rounded-xl shadow-md">
+        <span class="font-semibold">Warranty Period:</span> {{ product.specificDetails.warrantyPeriod }} Months
+      </div>
+      <div *ngIf="product.specificDetails.furnitureType" class="bg-gray-50 p-4 rounded-xl shadow-md">
+        <span class="font-semibold">Furniture Type:</span> {{ product.specificDetails.furnitureType }}
       </div>
     </div>
   </div>
-  
-  <!-- Loading Message -->
-  <div *ngIf="!product" class="text-center text-gray-500 mt-10">
-    <p>Loading product details...</p>
+
+  <!-- Seller Information -->
+  <div class="mt-8 p-6 bg-gray-100 rounded-xl">
+    <h3 class="text-2xl font-bold mb-4">Seller Details</h3>
+    <p><span class="font-semibold">Name:</span> {{ product.sellerDetails.fullName }}</p>
+    <p><span class="font-semibold">Email:</span> {{ product.sellerDetails.email }}</p>
+    <p><span class="font-semibold">Location:</span> {{ product.sellerDetails.city }}</p>
+
+    <button (click)="goToChat()"
+      class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition duration-300">
+      Chat with Seller
+    </button>
   </div>
-  
+
+  <!-- Other Products -->
+  <div *ngIf="product.otherProductsFromSameUser.length > 0" class="mt-10">
+    <h3 class="text-2xl font-bold mb-6">Other Listings by Seller</h3>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+      <div *ngFor="let item of product.otherProductsFromSameUser" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition">
+        <img [src]="item.image" alt="{{ item.title }}" class="w-full h-32 object-cover rounded-md">
+        <h4 class="mt-2 text-lg font-semibold">{{ item.title }}</h4>
+        <p class="text-sm text-gray-600">{{ item.category }}</p>
+        <p class="text-sm font-semibold">₹{{ item.price }}</p>
+        <button (click)="viewProduct(item.productId)"
+          class="mt-2 w-full bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-md transition">
+          View
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Message -->
+<div *ngIf="!product" class="text-center text-gray-500 mt-10">
+  <p>Loading product details...</p>
+</div>

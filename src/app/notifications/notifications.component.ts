@@ -36,26 +36,29 @@ export class NotificationsComponent implements OnInit {
   approvePurchase(transactionId: string) {
     const transaction = this.notifications.find(n => n.transactionId === transactionId);
     if (!transaction) return;
-
+  
     const payload = {
       productId: transaction.productId,
       sellerEmail: transaction.sellerEmail,
       buyerEmail: transaction.buyerEmail,
       status: 'Approved'
     };
-
+  
     this.notificationService.sendBuyerResponse(payload).subscribe({
       next: () => {
-        alert('Purchase approved!');
-        this.refreshNotifications();
+        // ❌ Don't refresh separately
+        // ✅ Directly remove or update the approved notification locally
+        this.notifications = this.notifications.filter(n => n.transactionId !== transactionId);
+        window.location.reload(); // fallback reload on failure
+
       },
       error: err => {
-        window.location.reload();
-        this.refreshNotifications();
         console.error('Approval failed', err);
+        window.location.reload(); // fallback reload on failure
       }
     });
   }
+  
 
   sendBuyerResponse(n: any, status: 'Approved' | 'Rejected') {
     const payload = {
@@ -67,14 +70,21 @@ export class NotificationsComponent implements OnInit {
   
     this.notificationService.sendBuyerResponse(payload).subscribe({
       next: () => {
-        // Refresh notifications
-        this.ngOnInit();
+        // Instead of ngOnInit(), directly update that specific notification
+        this.notifications = this.notifications.map(item => {
+          if (item.transactionId === n.transactionId) {
+            return { ...item, status: status };
+          }
+          return item;
+        });
       },
       error: (err) => {
         console.error('Buyer response failed:', err);
       }
     });
+    window.location.reload();
   }
+  
   
 
   rejectPurchase(transactionId: string) {

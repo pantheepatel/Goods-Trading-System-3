@@ -46,10 +46,14 @@ export class NavbarComponent {
 
   onSearch() {
     console.log('Search Clicked! Query:', this.searchQuery);
-    this.filterService.setSearchQuery(this.searchQuery);  // ✅ Update search query in service
+    this.filterService.setSearchQuery(this.searchQuery); 
   }
   toggleProfileMenu() {
     this.isProfileMenuOpen = !this.isProfileMenuOpen;
+  }
+
+  closeProfileMenu() {
+    this.isProfileMenuOpen = false;
   }
 
   openModal() {
@@ -74,6 +78,11 @@ export class NavbarComponent {
 
   onCategorySelect(category: string) {
     this.filterService.setCategory(category);
+    if (this.selectedCategory === category) {
+      this.selectedCategory = ''; 
+    } else {
+      this.selectedCategory = category; 
+    }
   }
 
   onCitySelect(event: Event) {

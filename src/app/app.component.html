@@ -1,13 +1,18 @@
-<div class="flex flex-col h-screen">
+<div class="flex flex-col min-h-screen">
+  <!-- Conditionally Show Navbar and Footer -->
   <ng-container *ngIf="showNavbarAndFooter">
-      <app-navbar></app-navbar>
-    </ng-container>
-    <app-loader></app-loader>
+    <app-navbar></app-navbar>
+  </ng-container>
+
+  <app-loader></app-loader>
+
+  <!-- Main Content -->
+  <main class="flex-grow">
     <router-outlet></router-outlet>
-    
-    <ng-container *ngIf="showNavbarAndFooter">
-      <!-- <app-footer></app-footer> -->
-    </ng-container>
-    
+  </main>
+
+  <!-- Conditionally Show Footer -->
+  <ng-container *ngIf="showNavbarAndFooter">
+    <app-footer></app-footer>
+  </ng-container>
 </div>
-  

@@ -53,19 +53,3 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 }
-
-
-// TODO: 
-
-// toastr can be implemented to show success and error messages.
-// make UI for every product added by user.
-// design card to show on dashboard page as list of added product by different users.
-// UI for product detail page.
-// add navigation bar to make navigation easier.
-// make one logo to replace default angular logo.
-// add footer to show contact details.
-// add validation for password, rightnow it is accepting any password of any length and any character.
-// add validation for email, rightnow it is accepting any email.
-// add validation for add product
-// OTP not sent error, even if it sent successfully.
-// add general option for chat in navbar, path is mentioned in routes file.

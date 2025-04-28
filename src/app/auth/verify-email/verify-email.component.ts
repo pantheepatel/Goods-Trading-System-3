@@ -36,9 +36,14 @@ export class VerifyEmailComponent {
         this.message = `OTP sent successfully to ${this.email}`;
         this.isError = false;
       },
-      error: () => {
-        this.message = 'Error sending OTP. Try again later.';
-        this.isError = true;
+      error: (err) => {
+        if (err.status === 200 || err.status === 0) {
+          this.message = `OTP sent successfully to ${this.email}`;
+          this.isError = false;
+        } else {
+          this.message = 'Error sending OTP. Try again later.';
+          this.isError = true;
+        }
       }
     });
   }
@@ -56,10 +61,11 @@ export class VerifyEmailComponent {
       if (this.countdown > 0) {
         this.countdown--;
       } else {
-        clearInterval(this.interval); // ✅ Prevent infinite requests
+        clearInterval(this.interval); 
         this.verifyDisabled = true; 
         this.message = 'OTP expired. Please request a new one.';
         this.isError = true;
+        this.resendDisabled = false;  
       }
     }, 1000);
   }
@@ -91,9 +97,15 @@ export class VerifyEmailComponent {
         this.isError = false;
         this.startCountdown(); 
       },
-      error: () => {
-        this.message = 'Error resending OTP. Please try again.';
-        this.isError = true;
+      error: (err) => {
+        if (err.status === 200 || err.status === 0) {  
+          this.message = 'New OTP sent successfully!';
+          this.isError = false;
+          this.startCountdown();
+        } else {
+          this.message = 'Error resending OTP. Please try again.';
+          this.isError = true;
+        }
       }
     });
   }

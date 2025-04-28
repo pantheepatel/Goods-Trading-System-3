@@ -29,7 +29,7 @@ export class AuthService {
     if (token && expiry && new Date().getTime() < +expiry) {
       return token;
     } else {
-      this.logout(); // Remove expired token
+      this.logout();
       return null;
     }
   }
@@ -54,7 +54,6 @@ export class AuthService {
   verifyOTP(email: string, enteredOtp: string,token:string): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      // Authorization: `Bearer ${token}`, // Ensure `token` is valid
     });
     const payload = {
       enteredOtp: enteredOtp,
@@ -69,10 +68,3 @@ export class AuthService {
     return this.http.get<any>(`${this.baseUrl}getOTP/${email}`,{withCredentials:true});
   }
 }
-
- 
-  // api/user/profile - GET - Retrieve user profile
-
-  
-
-  // api/user/profile - PUT - Update user profile -- phase 2

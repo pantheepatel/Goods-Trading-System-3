@@ -58,11 +58,15 @@
       <!-- Dropdown Menu -->
       <div *ngIf="isProfileMenuOpen" class="absolute right-0 bg-white shadow-lg rounded-lg w-48 mt-2">
         <ul class="py-2">
-          <li><a routerLink="/profile" class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
-          <li><a routerLink="/favourites" class="block px-4 py-2 hover:bg-gray-100">Favourites</a></li>
-          <li><a routerLink="/my-ads" class="block px-4 py-2 hover:bg-gray-100">My Ads</a></li>
+          <li><a routerLink="/profile" (click)="closeProfileMenu()"
+              class="block px-4 py-2 hover:bg-gray-100">Profile</a></li>
+          <li><a routerLink="/favourites" (click)="closeProfileMenu()"
+              class="block px-4 py-2 hover:bg-gray-100">Favourites</a></li>
+          <li><a routerLink="/my-ads" (click)="closeProfileMenu()" class="block px-4 py-2 hover:bg-gray-100">My Ads</a>
+          </li>
           <li class="border-t">
-            <button (click)="logout()" class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">
+            <button (click)="logout()" (click)="closeProfileMenu()"
+              class="w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100">
               Logout
             </button>
           </li>
@@ -72,13 +76,14 @@
   </div>
 </nav>
 
-<!-- 🟢 Improved Subnavbar (Categories) -->
+
 <div *ngIf="isDashboardPage" class="bg-gray-100 shadow-inner">
   <div class="container mx-auto py-3 overflow-x-auto whitespace-nowrap">
     <div class="flex items-center justify-center space-x-4 md:space-x-6">
-      <span *ngFor="let category of categories" (click)="onCategorySelect(category)"
-        [class.bg-blue-500]="selectedCategory === category" [class.text-white]="selectedCategory === category"
-        class="cursor-pointer px-4 py-2 text-gray-700 bg-white rounded-lg shadow hover:bg-blue-500 hover:text-white transition">
+      <span *ngFor="let category of categories" (click)="onCategorySelect(category)" [ngClass]="{
+        'bg-blue-500 text-white': selectedCategory === category,
+        'bg-white text-gray-700 hover:bg-blue-500 hover:text-white': selectedCategory !== category
+      }" class="cursor-pointer px-4 py-2 rounded-lg shadow transition">
         {{ category }}
       </span>
     </div>
